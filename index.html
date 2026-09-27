@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Apparel One Indonesia — Sign In</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        montserrat: ['Montserrat', 'sans-serif']
+                    },
+                    colors: {
+                        aoiRed: '#f04b45'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: #ffffff;
+            color: #111111;
+        }
+
+        .login-container {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hex {
+            position: absolute;
+            width: 56px;
+            height: 64px;
+            opacity: 0.55;
+        }
+
+        .hex::before,
+        .hex::after {
+            content: "";
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e5e5e5;
+            transform: rotate(30deg);
+            background: white;
+        }
+
+        .hex::before {
+            top: 0;
+            left: 8px;
+        }
+
+        .hex::after {
+            bottom: 0;
+            left: 8px;
+        }
+
+        .hex-1 {
+            right: 9%;
+            bottom: 40%;
+            transform: scale(.8);
+        }
+
+        .hex-2 {
+            right: 18%;
+            bottom: 25%;
+            transform: scale(.95);
+        }
+
+        .hex-3 {
+            right: 30%;
+            bottom: 12%;
+            transform: scale(.75);
+        }
+
+        .hex-4 {
+            right: 8%;
+            bottom: 17%;
+            transform: scale(.72);
+        }
+
+        .hex-5 {
+            right: 27%;
+            bottom: 30%;
+            transform: scale(.55);
+        }
+
+        .hex-6 {
+            right: 40%;
+            bottom: 10%;
+            transform: scale(.7);
+        }
+
+        .hex-7 {
+            right: 12%;
+            bottom: 8%;
+            transform: scale(.55);
+        }
+
+        .input-line {
+            transition: border-color .25s ease;
+        }
+
+        .input-line:focus-within {
+            border-color: #111111;
+        }
+
+        .signin-btn {
+            transition:
+                transform .2s ease,
+                background-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .signin-btn:hover {
+            background: #ffdfe1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(240, 75, 69, 0.12);
+        }
+
+        .signin-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .decorations {
+                opacity: .45;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hex {
+                transform: scale(.6) !important;
+            }
+
+            .login-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen overflow-hidden">
+
+    <!-- MAIN -->
+    <main class="relative min-h-screen flex items-center justify-center">
+
+        <!-- Decorative Hexagons -->
+        <div class="decorations absolute inset-0 pointer-events-none overflow-hidden">
+
+            <div class="hex hex-1"></div>
+            <div class="hex hex-2"></div>
+            <div class="hex hex-3"></div>
+            <div class="hex hex-4"></div>
+            <div class="hex hex-5"></div>
+            <div class="hex hex-6"></div>
+            <div class="hex hex-7"></div>
+
+        </div>
+
+
+        <!-- LOGIN AREA -->
+        <section class="login-container w-[345px] relative z-10">
+
+            <!-- LOGO -->
+            <div class="flex justify-center mb-[48px]">
+
+                <div class="text-center">
+
+                    <!-- AOI LOGO -->
+                    <div class="relative flex justify-center items-end">
+
+                        <!-- Red Triangle -->
+                        <div
+                            class="absolute left-[1px] bottom-[5px] w-0 h-0
+                            border-l-[10px] border-l-transparent
+                            border-r-[10px] border-r-transparent
+                            border-bottom-[19px] border-b-[#f04b45]">
+                        </div>
+
+                        <!-- AOI Text -->
+                        <div
+                            class="font-serif font-black tracking-[-7px]
+                            text-[54px] leading-[48px]">
+                            AOI
+                        </div>
+
+                    </div>
+
+                    <!-- BRAND NAME -->
+                    <div
+                        class="font-bold text-[11px] tracking-[-0.3px]
+                        leading-3 mt-1">
+                        APPAREL ONE
+                    </div>
+
+                    <div
+                        class="text-[8px] tracking-[4px]
+                        leading-3 mt-[2px]">
+                        INDONESIA
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SIGN IN TITLE -->
+            <h1
+                class="text-[16px] font-bold mb-[58px]">
+                Sign In
+            </h1>
+
+
+            <!-- FORM -->
+            <form id="loginForm" class="space-y-[22px]">
+
+                <!-- EMAIL -->
+                <div class="input-line border-b border-[#dedede] pb-[10px]">
+
+                    <input
+                        id="email"
+                        type="email"
+                        autocomplete="email"
+                        placeholder="Email Address"
+                        class="w-full bg-transparent outline-none
+                        text-[14px] font-medium
+                        placeholder:text-[#222222]"
+                        required>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+                <div class="input-line border-b border-[#dedede] pb-[10px]">
+
+                    <div class="flex items-center">
+
+                        <input
+                            id="password"
+                            type="password"
+                            autocomplete="current-password"
+                            placeholder="Password"
+                            class="flex-1 bg-transparent outline-none
+                            text-[14px] font-medium
+                            placeholder:text-[#222222]"
+                            required>
+
+                        <!-- Forgot Password -->
+                        <button
+                            type="button"
+                            id="forgotPassword"
+                            class="text-[9px] text-[#777777]
+                            whitespace-nowrap ml-3
+                            hover:text-black transition">
+                            Forgot Password
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTION -->
+                <div class="flex justify-end pt-[18px]">
+
+                    <button
+                        type="submit"
+                        class="signin-btn
+                        w-[97px] h-[38px]
+                        rounded-[7px]
+                        border border-[#f04b45]
+                        bg-[#ffe4e5]
+                        text-[14px]
+                        font-medium
+                        flex items-center justify-center">
+
+                        <span id="buttonText">Sign In</span>
+
+                        <span
+                            id="buttonLoader"
+                            class="hidden">
+
+                            <svg
+                                class="animate-spin w-4 h-4"
+                                viewBox="0 0 24 24"
+                                fill="none">
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="9"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                    opacity=".25"/>
+
+                                <path
+                                    d="M21 12a9 9 0 0 0-9-9"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                    stroke-linecap="round"/>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- MESSAGE -->
+            <div
+                id="message"
+                class="hidden mt-5 text-center text-[11px]">
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        const loginForm = document.getElementById('loginForm');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+
+        const buttonText = document.getElementById('buttonText');
+        const buttonLoader = document.getElementById('buttonLoader');
+
+        const message = document.getElementById('message');
+        const forgotPassword = document.getElementById('forgotPassword');
+
+
+        /*
+        ========================================
+        SIGN IN
+        ========================================
+        Front-end only.
+        No backend/API is connected.
+        */
+
+        // Hardcoded front-end demo accounts
+        const accounts = {
+            "admin@aoi.com": {
+                password: "admin123",
+                role: "admin",
+                name: "Raque Canete",
+                dashboard: "admin-dashboard.html"
+            },
+            "employee@aoi.com": {
+                password: "employee123",
+                role: "employee",
+                name: "Raque Canete",
+                dashboard: "employee-dashboard.html"
+            },
+            "subadmin@aoi.com": {
+                password: "subadmin123",
+                role: "sub-admin",
+                name: "Sub-admin",
+                dashboard: "subadmin-dashboard.html"
+            }
+        };
+
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const emailValue = email.value.trim().toLowerCase();
+            const passwordValue = password.value.trim();
+
+            if (!emailValue || !passwordValue) {
+                showMessage(
+                    'Please enter your email and password.',
+                    'error'
+                );
+                return;
+            }
+
+            buttonText.classList.add('hidden');
+            buttonLoader.classList.remove('hidden');
+            message.classList.add('hidden');
+
+            setTimeout(() => {
+                buttonText.classList.remove('hidden');
+                buttonLoader.classList.add('hidden');
+
+                const account = accounts[emailValue];
+
+                if (!account || account.password !== passwordValue) {
+                    showMessage(
+                        'Invalid email or password.',
+                        'error'
+                    );
+                    return;
+                }
+
+                sessionStorage.setItem('aoiLoggedIn', 'true');
+                sessionStorage.setItem('aoiRole', account.role);
+                sessionStorage.setItem('aoiEmail', emailValue);
+                sessionStorage.setItem('aoiName', account.name);
+
+                showMessage(
+                    `Welcome! Redirecting to the ${account.role} dashboard...`,
+                    'success'
+                );
+
+                setTimeout(() => {
+                    window.location.href = account.dashboard;
+                }, 500);
+
+            }, 700);
+        });
+
+
+        /*
+        ========================================
+        FORGOT PASSWORD
+        ========================================
+        */
+
+        forgotPassword.addEventListener('click', function () {
+
+            const emailValue = email.value.trim();
+
+            if (!emailValue) {
+
+                showMessage(
+                    'Enter your email address first.',
+                    'error'
+                );
+
+                email.focus();
+
+                return;
+            }
+
+            showMessage(
+                'Password reset is unavailable in this front-end demo.',
+                'success'
+            );
+
+        });
+
+
+        /*
+        ========================================
+        MESSAGE
+        ========================================
+        */
+
+        function showMessage(text, type) {
+
+            message.textContent = text;
+
+            message.classList.remove(
+                'hidden',
+                'text-red-500',
+                'text-green-600'
+            );
+
+            if (type === 'error') {
+                message.classList.add('text-red-500');
+            } else {
+                message.classList.add('text-green-600');
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

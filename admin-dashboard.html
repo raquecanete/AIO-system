@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apparel One — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+          colors: {
+            roseui: '#fce2e5',
+            roseborder: '#f4a6ad',
+            accent: '#ff5b67'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #fafafa; color: #111111; }
+    .scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar::-webkit-scrollbar-thumb { background: #d5d5d5; border-radius: 999px; }
+    .chart-grid line { stroke: #eeeeee; stroke-width: 1; }
+    .chart-area { fill: url(#areaFill); }
+    .chart-line { fill: none; stroke: #ff6874; stroke-width: 2; }
+    .chart-dot { fill: white; stroke: #ff6874; stroke-width: 2; }
+
+
+    /* ---------- RESPONSIVE MOBILE LAYOUT ---------- */
+    @media (max-width: 767px) {
+      body {
+        overflow: hidden;
+      }
+
+      /* Sidebar becomes an off-canvas drawer */
+      aside {
+        position: fixed !important;
+        inset: 0 auto 0 0;
+        width: 255px !important;
+        height: 100vh;
+        z-index: 60;
+        transform: translateX(-105%);
+        transition: transform .25s ease;
+        box-shadow: 8px 0 25px rgba(0,0,0,.12);
+      }
+
+      body.mobile-menu-open aside {
+        transform: translateX(0);
+      }
+
+      /* Darkened area behind mobile sidebar */
+      body.mobile-menu-open::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.45);
+        z-index: 50;
+      }
+
+      main {
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      #mobileMenuBtn {
+        display: flex !important;
+      }
+
+      /* KPI cards stack vertically */
+      .grid.grid-cols-2 {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+
+      /* Monthly report + right cards stack */
+      .grid.grid-cols-\[1\.65fr_1fr\] {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+
+      /* Give the chart more natural mobile height */
+      .grid.grid-cols-\[1\.65fr_1fr\] > div:first-child {
+        height: 215px !important;
+      }
+
+      /* Activity/account cards remain readable */
+      .grid.grid-cols-\[1\.65fr_1fr\] > div:last-child {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .grid.grid-cols-\[1\.65fr_1fr\] > div:last-child > div {
+        width: 100%;
+      }
+
+      /* Compact content on phones */
+      section > div {
+        width: 100% !important;
+      }
+
+      #pageTitle {
+        font-size: 15px;
+      }
+
+      #pageSubtitle {
+        font-size: 10px;
+      }
+
+      /* Keep the graph labels readable */
+      .chart-line,
+      .chart-dot {
+        vector-effect: non-scaling-stroke;
+      }
+
+      /* Make the table explicitly scrollable */
+      table {
+        min-width: 850px !important;
+      }
+    }
+
+    @media (min-width: 768px) {
+      #mobileMenuBtn {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 420px) {
+      header {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+
+      section > div {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+
+      .h-\[88px\] {
+        height: 82px !important;
+      }
+
+      .grid.grid-cols-\[1\.65fr_1fr\] > div:first-child {
+        height: 205px !important;
+      }
+
+      .grid.grid-cols-\[1\.65fr_1fr\] > div:first-child svg {
+        height: 105px;
+      }
+
+      .activity {
+        font-size: 7.5px !important;
+      }
+    }
+
+    /* ---------- THEME SYSTEM ---------- */
+    body {
+      transition: background-color .2s ease, color .2s ease;
+    }
+
+    body.theme-dark {
+      background: #111111 !important;
+      color: #f5f5f5 !important;
+    }
+
+    body.theme-dark aside,
+    body.theme-dark header,
+    body.theme-dark section,
+    body.theme-dark .bg-white {
+      background-color: #161616 !important;
+      color: #f5f5f5 !important;
+    }
+
+    body.theme-dark .border-gray-200,
+    body.theme-dark .border-gray-300 {
+      border-color: #363636 !important;
+    }
+
+    body.theme-dark .shadow-sm {
+      box-shadow: 0 1px 3px rgba(0,0,0,.45) !important;
+    }
+
+    body.theme-dark input,
+    body.theme-dark select {
+      background-color: #202020 !important;
+      color: #f5f5f5 !important;
+      border-color: #3d3d3d !important;
+    }
+
+    body.theme-dark input::placeholder {
+      color: #999 !important;
+    }
+
+    body.theme-dark .hover\:bg-gray-50:hover {
+      background-color: #242424 !important;
+    }
+
+    body.theme-dark .text-gray-400 {
+      color: #999 !important;
+    }
+
+    body.theme-dark table tbody tr:hover {
+      background-color: #202020 !important;
+    }
+
+    body.theme-dark #brandMenu {
+      background-color: #202020 !important;
+      color: #f5f5f5 !important;
+      border-color: #3d3d3d !important;
+    }
+
+    body.theme-dark .brand-option:hover {
+      background-color: #2a2a2a !important;
+    }
+
+    body.theme-dark .text-gray-500 {
+      color: #aaa !important;
+    }
+
+    body.theme-dark .hover\\:text-black:hover {
+      color: #fff !important;
+    }
+
+    body.theme-dark .bg-white\\/70 {
+      background-color: rgba(255,255,255,.12) !important;
+    }
+
+    body.theme-dark .chart-grid line {
+      stroke: #333 !important;
+    }
+
+    body.theme-dark .chart-area {
+      fill: url(#areaFillDark);
+    }
+
+    body.theme-dark .activity,
+    body.theme-dark .bg-\[\#fde3e5\] {
+      background-color: #3a2023 !important;
+      border-color: #71363d !important;
+      color: #f8dfe1 !important;
+    }
+
+    body.theme-dark #lightBtn {
+      background-color: #202020 !important;
+      color: #aaa !important;
+      border-color: #3d3d3d !important;
+    }
+
+    body.theme-dark #darkBtn {
+      background-color: #f5f5f5 !important;
+      color: #111 !important;
+    }
+
+    /* Keep the active sidebar item visible in dark mode */
+    body.theme-dark .nav-btn.active {
+      background-color: #3a2023 !important;
+      border-color: #a94b55 !important;
+      color: #fff !important;
+    }
+
+    /* Header/sidebar dividers */
+    body.theme-dark aside > div:first-child,
+    body.theme-dark header {
+      border-color: #363636 !important;
+    }
+
+    /* SVG chart area */
+    body.theme-dark #areaFill stop:first-child {
+      stop-color: #5a272d;
+    }
+
+    body.theme-dark #areaFill stop:last-child {
+      stop-color: #161616;
+    }
+
+    /* ---------- IMPORT DATA BANNER ---------- */
+    #importBanner {
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    #importBanner.is-imported {
+      background: #e6f6ec;
+      border: 1px solid #a7dfb8;
+      color: #1f7a3f;
+    }
+
+    #importBanner.is-sample {
+      background: #fef6e6;
+      border: 1px solid #f0d99a;
+      color: #92640b;
+    }
+
+    body.theme-dark #importBanner.is-imported {
+      background: #16301f;
+      border-color: #2c5c3c;
+      color: #b6e8c4;
+    }
+
+    body.theme-dark #importBanner.is-sample {
+      background: #332a12;
+      border-color: #5c4d1f;
+      color: #f0d99a;
+    }
+
+    #importBanner button {
+      text-decoration: underline;
+      font-weight: 700;
+    }
+
+  </style>
+</head>
+
+<body class="bg-white text-black overflow-hidden">
+  <div class="h-screen flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-[180px] shrink-0 border-r border-gray-200 bg-white flex flex-col">
+      <div class="h-[86px] border-b border-gray-200 flex items-center justify-center">
+        <div class="text-center leading-none select-none">
+          <div class="relative inline-block">
+            <span class="text-[38px] font-black tracking-[-5px]">A</span>
+            <span class="text-[38px] font-black tracking-[-5px]">O</span>
+            <span class="text-[38px] font-black tracking-[-5px]">I</span>
+            <span class="absolute left-[2px] bottom-[-1px] text-[16px] text-red-500">▲</span>
+          </div>
+          <div class="text-[10px] font-extrabold tracking-[-.3px] mt-[-1px]">APPAREL ONE</div>
+          <div class="text-[7px] tracking-[2px] text-gray-500 mt-0.5">INDONESIA</div>
+        </div>
+      </div>
+
+      <nav class="px-3 pt-7 space-y-3">
+        <button data-page="Overview" class="nav-btn active w-full h-[35px] rounded-[4px] border border-[#ffabb2] bg-[#fde5e7] flex items-center gap-3 px-4 text-[12px] font-bold">
+          <span class="icon">▣</span><span>Overview</span>
+        </button>
+        <button data-page="CSI Masterlist" class="nav-btn w-full h-[35px] rounded-[4px] flex items-center gap-3 px-4 text-[12px] font-bold hover:bg-gray-50">
+          <span class="icon">▦</span><span>CSI Masterlist</span>
+        </button>
+        <button data-page="Activity" class="nav-btn w-full h-[35px] rounded-[4px] flex items-center gap-3 px-4 text-[12px] font-bold hover:bg-gray-50">
+          <span class="icon">🏃</span><span>Activity</span>
+        </button>
+        <button data-page="Accounts" class="nav-btn w-full h-[35px] rounded-[4px] flex items-center gap-3 px-4 text-[12px] font-bold hover:bg-gray-50">
+          <span class="icon">♟</span><span>Accounts</span>
+        </button>
+        <button data-page="Reports" class="nav-btn w-full h-[35px] rounded-[4px] flex items-center gap-3 px-4 text-[12px] font-bold hover:bg-gray-50">
+          <span class="icon">▣</span><span>Reports</span>
+        </button>
+      </nav>
+
+      <div class="mt-auto px-3 pb-4 space-y-3">
+        <a href="export.html" class="w-full h-[35px] flex items-center gap-3 px-4 text-[12px] font-bold hover:bg-gray-50 rounded-[4px]">
+          <span>⇪</span><span>Import Data</span>
+        </a>
+        <button class="w-full h-[35px] flex items-center gap-3 px-4 text-[12px] font-bold hover:bg-gray-50">
+          <span>⚙</span><span>Settings</span>
+        </button>
+        <button id="logoutBtn" class="w-full h-[35px] flex items-center gap-3 px-4 text-[12px] font-bold text-red-500 hover:bg-red-50">
+          <span>↪</span><span>Log Out</span>
+        </button>
+
+        <div class="flex h-[30px] rounded-md border border-gray-300 shadow-sm overflow-hidden text-[11px] font-bold">
+          <button id="lightBtn" class="theme-btn flex-1 bg-[#fde5e7] border-r border-[#ffabb2]">◐ Light</button>
+          <button id="darkBtn" class="theme-btn flex-1 bg-white">◐ Dark</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="min-w-0 flex-1 flex flex-col">
+      <!-- HEADER -->
+      <header class="h-[70px] sm:h-[86px] shrink-0 border-b border-gray-200 flex items-center px-3 sm:px-4 gap-3 sm:gap-5">
+        <button id="mobileMenuBtn" class="hidden w-9 h-9 shrink-0 rounded-md border border-gray-200 items-center justify-center text-lg hover:bg-gray-50" aria-label="Open menu">
+          ☰
+        </button>
+
+        <div class="relative flex-1 sm:flex-none sm:w-[280px]">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[18px]">⌕</span>
+          <input id="searchInput" type="text" placeholder="Search anything..."
+            class="w-full h-[32px] sm:h-[30px] rounded-md border border-gray-300 pl-10 pr-3 text-[10px] outline-none focus:border-gray-500" />
+        </div>
+
+        <div class="ml-auto flex items-center gap-2 sm:gap-4 shrink-0">
+          <button id="notificationBtn" class="w-[27px] h-[27px] rounded-md border border-gray-200 shadow-sm flex items-center justify-center hover:bg-gray-50 relative">
+            🔔
+            <span id="notifDot" class="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+          </button>
+          <div class="w-[34px] h-[34px] rounded-full bg-gray-300 overflow-hidden flex items-center justify-center text-sm">👩🏻</div>
+          <div class="leading-tight hidden sm:block">
+            <div class="text-[11px] font-extrabold">Raque</div>
+            <div class="text-[11px] font-extrabold">Canete</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <section class="flex-1 overflow-auto scrollbar">
+        <div id="overviewView" class="p-3 sm:p-4 min-w-0 w-full">
+          <div class="mb-2">
+            <h1 id="pageTitle" class="text-[16px] font-extrabold">Admin Dashboard</h1>
+            <p id="pageSubtitle" class="text-[12px] mt-0.5">Monitor and Manage Apparel Records</p>
+          </div>
+
+          <!-- KPI ROW -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="h-[88px] border border-gray-300 rounded-lg shadow-sm px-3 py-2.5">
+              <div class="flex items-center gap-2 text-[11px] font-extrabold">
+                <span class="w-7 h-7 rounded-md border border-gray-200 shadow-sm flex items-center justify-center text-base">👕</span>
+                <button id="brandSelect" class="flex items-center gap-1">PUMA <span class="text-[9px]">▼</span></button>
+              </div>
+              <div id="brandTotalDesigns" class="mt-1 text-[16px]">892</div>
+              <div class="text-[9px] mt-0.5">Total Designs this Month</div>
+            </div>
+
+            <div class="h-[88px] border border-gray-300 rounded-lg shadow-sm px-3 py-2.5">
+              <div class="flex items-center gap-2 text-[11px] font-extrabold">
+                <span class="w-7 h-7 rounded-md border border-gray-200 shadow-sm flex items-center justify-center text-base">🛠</span>
+                TOTAL DESIGNS
+              </div>
+              <div id="grandTotalDesigns" class="mt-1 text-[16px]">3,234</div>
+              <div class="text-[9px] mt-0.5">Overall Total Designs this Month</div>
+            </div>
+          </div>
+
+          <!-- MIDDLE -->
+          <div class="grid grid-cols-[1.65fr_1fr] gap-3 mt-3">
+            <!-- CHART -->
+            <div class="h-[198px] border border-gray-300 rounded-lg shadow-sm p-3">
+              <div class="flex items-center justify-between">
+                <h2 class="text-[11px] font-extrabold">Monthly Reports</h2>
+                <select class="text-[10px] font-bold border border-gray-200 rounded-full px-3 py-1 outline-none">
+                  <option>Sept.</option><option>Aug.</option><option>July</option>
+                </select>
+              </div>
+              <div class="text-[9px] mt-2">Total designs created this month</div>
+              <div class="text-[11px] font-extrabold mt-2">3,234</div>
+
+              <div class="mt-1 h-[122px]">
+                <svg viewBox="0 0 620 145" preserveAspectRatio="none" class="w-full h-full">
+                  <defs>
+                    <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stop-color="#ffdfe2" stop-opacity=".95"/>
+                      <stop offset="100%" stop-color="#fff" stop-opacity=".15"/>
+                    </linearGradient>
+                  </defs>
+                  <g class="chart-grid">
+                    <line x1="0" y1="28" x2="620" y2="28"></line>
+                    <line x1="0" y1="57" x2="620" y2="57"></line>
+                    <line x1="0" y1="86" x2="620" y2="86"></line>
+                    <line x1="0" y1="115" x2="620" y2="115"></line>
+                  </g>
+                  <path class="chart-area" d="M0,94 C25,91 25,83 53,84 C78,85 82,92 110,87 C135,82 136,72 163,73 C190,75 192,64 220,68 C248,72 247,79 274,72 C303,64 301,54 329,52 C356,50 365,61 386,57 C413,52 410,37 439,43 C464,48 464,60 493,52 C520,44 518,27 548,33 C573,37 579,47 593,42 C606,37 610,29 620,25 L620,145 L0,145 Z"></path>
+                  <path class="chart-line" d="M0,94 C25,91 25,83 53,84 C78,85 82,92 110,87 C135,82 136,72 163,73 C190,75 192,64 220,68 C248,72 247,79 274,72 C303,64 301,54 329,52 C356,50 365,61 386,57 C413,52 410,37 439,43 C464,48 464,60 493,52 C520,44 518,27 548,33 C573,37 579,47 593,42 C606,37 610,29 620,25"></path>
+                  <g>
+                    <circle class="chart-dot" cx="0" cy="94" r="3"></circle>
+                    <circle class="chart-dot" cx="53" cy="84" r="3"></circle>
+                    <circle class="chart-dot" cx="110" cy="87" r="3"></circle>
+                    <circle class="chart-dot" cx="163" cy="73" r="3"></circle>
+                    <circle class="chart-dot" cx="220" cy="68" r="3"></circle>
+                    <circle class="chart-dot" cx="274" cy="72" r="3"></circle>
+                    <circle class="chart-dot" cx="329" cy="52" r="3"></circle>
+                    <circle class="chart-dot" cx="386" cy="57" r="3"></circle>
+                    <circle class="chart-dot" cx="439" cy="43" r="3"></circle>
+                    <circle class="chart-dot" cx="493" cy="52" r="3"></circle>
+                    <circle class="chart-dot" cx="548" cy="33" r="3"></circle>
+                    <circle class="chart-dot" cx="593" cy="42" r="3"></circle>
+                    <circle class="chart-dot" cx="620" cy="25" r="3"></circle>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex justify-between px-1 text-[7px] text-gray-400 mt-[-5px]">
+                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+              </div>
+            </div>
+
+            <!-- RIGHT CARDS -->
+            <div class="space-y-3">
+              <!-- Recent Activities -->
+              <div class="h-[89px] border border-gray-300 rounded-lg shadow-sm p-2.5 overflow-hidden">
+                <div class="flex items-center justify-between mb-1.5">
+                  <h2 class="text-[11px] font-extrabold">Recent Activities</h2>
+                  <button class="text-[8px] text-gray-500 hover:text-black">View all</button>
+                </div>
+
+                <div class="space-y-1">
+                  <div class="activity bg-[#fde3e5] border border-[#ffabb2] rounded-[3px] h-[25px] px-2 flex items-center gap-2 text-[8px] leading-none">
+                    <span class="w-[19px] h-[19px] shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-[10px]">👩🏻</span>
+                    <span class="truncate"><b>Raque</b> recently visited the PUMA layouts</span>
+                    <span class="ml-auto shrink-0 text-[7px] text-gray-500">Now</span>
+                  </div>
+
+                  <div class="activity bg-[#fde3e5] border border-[#ffabb2] rounded-[3px] h-[25px] px-2 flex items-center gap-2 text-[8px] leading-none">
+                    <span class="w-[19px] h-[19px] shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-[10px]">👩🏻</span>
+                    <span class="truncate"><b>Marka</b> recently visited the PUMA layouts</span>
+                    <span class="ml-auto shrink-0 text-[7px] text-gray-500">2m</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Accounts -->
+              <div class="h-[89px] border border-gray-300 rounded-lg shadow-sm p-2.5 overflow-hidden">
+                <div class="flex items-center justify-between mb-1.5">
+                  <h2 class="text-[11px] font-extrabold">Accounts</h2>
+                  <button class="text-[8px] text-gray-500 hover:text-black">Manage</button>
+                </div>
+
+                <div class="space-y-1">
+                  <div class="bg-[#fde3e5] border border-[#ffabb2] rounded-[3px] h-[25px] px-2 flex items-center text-[8px] leading-none">
+                    <span class="w-[19px] h-[19px] shrink-0 rounded-full bg-white/70 flex items-center justify-center mr-2">+</span>
+                    <span class="truncate">You created an account for <b>Raque</b> as Employee</span>
+                  </div>
+
+                  <div class="bg-[#fde3e5] border border-[#ffabb2] rounded-[3px] h-[25px] px-2 flex items-center gap-2 text-[8px] leading-none">
+                    <span class="w-[19px] h-[19px] shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-[10px]">👩🏻</span>
+                    <span class="truncate"><b>Raque Canete</b> <span class="text-gray-500">(Admin)</span></span>
+                    <span class="ml-auto shrink-0 px-1.5 py-0.5 rounded-full bg-white/70 text-[7px] font-bold">Active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TABLE -->
+          <div class="mt-5 sm:mt-8 border-t border-gray-200">
+            <!-- Shows the selected worksheet currently displayed below. -->
+            <div id="importBanner" class="mt-3"></div>
+
+            <div class="overflow-x-auto scrollbar">
+              <table class="w-full min-w-[850px] border-collapse text-[9px]">
+                <thead id="designTableHead"></thead>
+                <tbody id="designTable"></tbody>
+              </table>
+            </div>
+            <nav class="flex items-center justify-between gap-3 border-t border-gray-200 py-3 text-[10px]" aria-label="Design table pagination">
+              <span id="pageSummary" class="text-gray-500" aria-live="polite"></span>
+              <div class="flex items-center gap-2">
+                <button id="previousPage" type="button" class="rounded border border-gray-300 px-3 py-1.5 font-bold hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40" disabled>Previous</button>
+                <span id="pageNumber" class="min-w-[48px] text-center font-bold"></span>
+                <button id="nextPage" type="button" class="rounded border border-gray-300 px-3 py-1.5 font-bold hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40" disabled>Next</button>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <div id="csiMasterlistView" class="hidden p-3 sm:p-4 min-w-0 w-full">
+          <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">Imported workbook</p><h2 class="text-[20px] font-extrabold">CSI Masterlist</h2><p id="masterlistFileInfo" class="mt-1 text-[10px] text-gray-500">All imported worksheets and row totals.</p></div>
+            <a href="export.html" class="flex h-9 items-center gap-2 rounded border border-gray-300 bg-white px-3 text-[10px] font-bold hover:bg-gray-50"><span>⇪</span>Import workbook</a>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 max-[767px]:grid-cols-1">
+            <article class="rounded border border-gray-300 bg-white px-4 py-3"><div class="text-[10px] font-bold text-gray-500">Total imported rows</div><div id="masterlistTotalRows" class="mt-1 text-[22px] font-extrabold">0</div></article>
+            <article class="rounded border border-gray-300 bg-white px-4 py-3"><div class="text-[10px] font-bold text-gray-500">Worksheets</div><div id="masterlistSheetCount" class="mt-1 text-[22px] font-extrabold">0</div></article>
+            <article class="rounded border border-gray-300 bg-white px-4 py-3"><div class="text-[10px] font-bold text-gray-500">Brands found</div><div id="masterlistBrandCount" class="mt-1 text-[22px] font-extrabold">0</div></article>
+          </div>
+
+          <div class="mt-4 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4 max-[767px]:grid-cols-1">
+            <section class="rounded border border-gray-300 bg-white">
+              <div class="border-b border-gray-200 px-4 py-3"><h3 class="text-[11px] font-extrabold">Rows by brand</h3><p class="mt-1 text-[9px] text-gray-500">Counts across all imported worksheets</p></div>
+              <div class="overflow-x-auto"><table class="w-full text-left text-[10px]"><thead><tr class="bg-gray-50 text-[9px] uppercase text-gray-500"><th class="px-4 py-2.5">Brand</th><th class="px-4 py-2.5 text-right">Rows</th></tr></thead><tbody id="masterlistBrands"></tbody></table></div>
+              <p id="masterlistBrandEmpty" class="hidden px-4 py-4 text-[10px] text-gray-500">No brand column was found in the imported worksheets.</p>
+            </section>
+            <section class="rounded border border-gray-300 bg-white">
+              <div class="border-b border-gray-200 px-4 py-3"><h3 class="text-[11px] font-extrabold">Rows by worksheet</h3><p class="mt-1 text-[9px] text-gray-500">Every sheet in the imported workbook</p></div>
+              <div class="overflow-x-auto"><table class="w-full text-left text-[10px]"><thead><tr class="bg-gray-50 text-[9px] uppercase text-gray-500"><th class="px-4 py-2.5">Worksheet</th><th class="px-4 py-2.5 text-right">Rows</th></tr></thead><tbody id="masterlistWorksheets"></tbody></table></div>
+            </section>
+          </div>
+
+          <section class="mt-4 rounded border border-gray-300 bg-white">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 px-4 py-3">
+              <div><h3 class="text-[11px] font-extrabold">All imported rows</h3><p id="masterlistRowSummary" class="mt-1 text-[9px] text-gray-500">No workbook rows loaded.</p></div>
+              <input id="masterlistSearch" type="search" placeholder="Search all sheets..." class="h-8 w-full max-w-[260px] rounded border border-gray-300 px-3 text-[10px] outline-none focus:border-gray-500" />
+            </div>
+            <div class="overflow-x-auto scrollbar"><table class="w-full min-w-[850px] border-collapse text-left text-[9px]"><thead id="masterlistHead"></thead><tbody id="masterlistRows"></tbody></table></div>
+            <nav class="flex items-center justify-between gap-3 border-t border-gray-200 px-4 py-3 text-[10px]" aria-label="Masterlist pagination"><span id="masterlistRange" class="text-gray-500" aria-live="polite"></span><div class="flex items-center gap-2"><button id="masterlistPrevious" class="rounded border border-gray-300 px-3 py-1.5 font-bold disabled:opacity-40" disabled>Previous</button><span id="masterlistPageNumber" class="min-w-[48px] text-center font-bold"></span><button id="masterlistNext" class="rounded border border-gray-300 px-3 py-1.5 font-bold disabled:opacity-40" disabled>Next</button></div></nav>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- BRAND DROPDOWN -->
+  <div id="brandMenu" class="hidden fixed z-50 bg-white border border-gray-200 shadow-lg rounded-md text-[10px] w-[110px]">
+    <button class="brand-option w-full text-left px-3 py-2 hover:bg-gray-50">PUMA</button>
+    <button class="brand-option w-full text-left px-3 py-2 hover:bg-gray-50">Nike</button>
+    <button class="brand-option w-full text-left px-3 py-2 hover:bg-gray-50">Adidas</button>
+  </div>
+
+  <dialog id="adminRowDetails" class="max-h-[88vh] w-[min(720px,calc(100vw-28px))] rounded-md shadow-xl backdrop:bg-black/40">
+    <div class="flex items-start justify-between border-b border-gray-200 p-5"><div><p class="text-[9px] font-bold uppercase tracking-[1px] text-[#b65a58]">Imported catalog row</p><h2 id="adminRowTitle" class="mt-1 text-[15px] font-extrabold">Row details</h2><p id="adminRowSubtitle" class="mt-1 text-[10px] text-gray-500"></p></div><button id="closeAdminRowDetails" class="rounded p-1 text-gray-500 hover:bg-gray-100" type="button" aria-label="Close row details">×</button></div>
+    <div class="scrollbar max-h-[65vh] overflow-y-auto p-5"><div><div class="flex items-center justify-between gap-3"><h3 class="text-[10px] font-extrabold uppercase tracking-[.8px]">Employee catalog visits</h3><span id="adminVisitCount" class="text-[9px] text-gray-500"></span></div><div id="adminRowVisitors" class="mt-2 space-y-2"></div></div><div class="mt-5 border-t border-gray-200 pt-4"><div class="flex items-center justify-between gap-3"><h3 class="text-[10px] font-extrabold uppercase tracking-[.8px]">Employee changes</h3><span id="adminChangeCount" class="text-[9px] text-gray-500"></span></div><div id="adminRowChanges" class="mt-2 space-y-2"></div></div><div class="mt-5 border-t border-gray-200 pt-4"><h3 class="mb-2 text-[10px] font-extrabold uppercase tracking-[.8px]">Imported column values</h3><div id="adminRowFields" class="divide-y divide-gray-100"></div></div></div>
+    <div class="border-t border-gray-200 px-5 py-3 text-right"><button id="closeAdminRowDetailsFooter" class="rounded border border-gray-300 px-3 py-2 text-[10px] font-bold" type="button">Close</button></div>
+  </dialog>
+
+  <script>
+
+    /* ==========================================
+       SHARED STORAGE KEY
+      (must match export.html)
+    =========================================== */
+
+    const DASHBOARD_STORAGE_KEY =
+        'aoi_imported_designs';
+    const DASHBOARD_HEADERS_KEY =
+      'aoi_imported_headers';
+    const DASHBOARD_ROW_IDS_KEY =
+      'aoi_imported_row_ids';
+    const DASHBOARD_WORKBOOK_KEY =
+      'aoi_imported_workbook';
+    const DASHBOARD_ACTIVE_SHEET_KEY =
+      'aoi_active_sheet_name';
+    const ACTIVITY_STORAGE_KEY =
+      'aoi_employee_activity';
+
+
+    let designs = [];
+    let designHeaders = [];
+    let designRowIds = [];
+    let activityEntries = [];
+    let workbookSheets = [];
+    let activeSheetName = '';
+
+    let usingImportedData = false;
+
+
+    try {
+
+        const raw =
+            localStorage.getItem(
+                DASHBOARD_STORAGE_KEY
+            );
+
+
+        if (raw) {
+
+            const parsed =
+                JSON.parse(raw);
+
+
+            if (
+                Array.isArray(parsed) &&
+                parsed.length
+            ) {
+
+                designs = parsed;
+
+                usingImportedData = true;
+
+            }
+
+        }
+
+            const storedHeaders = localStorage.getItem(DASHBOARD_HEADERS_KEY);
+            if (storedHeaders) {
+              const parsedHeaders = JSON.parse(storedHeaders);
+              if (Array.isArray(parsedHeaders)) designHeaders = parsedHeaders.map(String);
+            }
+
+          const storedRowIds = JSON.parse(localStorage.getItem(DASHBOARD_ROW_IDS_KEY) || 'null');
+          designRowIds = Array.isArray(storedRowIds) && storedRowIds.length === designs.length
+            ? storedRowIds
+            : designs.map((_, index) => `aoi-row-${index}`);
+          const storedActivities = JSON.parse(localStorage.getItem(ACTIVITY_STORAGE_KEY) || '[]');
+          activityEntries = Array.isArray(storedActivities) ? storedActivities : [];
+          const storedWorkbook = JSON.parse(localStorage.getItem(DASHBOARD_WORKBOOK_KEY) || '[]');
+          workbookSheets = Array.isArray(storedWorkbook) ? storedWorkbook : [];
+          activeSheetName = localStorage.getItem(DASHBOARD_ACTIVE_SHEET_KEY) || '';
+
+    }
+
+    catch (error) {
+
+        console.error(
+            'Could not read imported design data:',
+            error
+        );
+
+    }
+
+    if (!workbookSheets.length && designs.length) {
+      workbookSheets = [{
+        name: activeSheetName || 'Imported data',
+        headers: designHeaders.length ? designHeaders : Object.keys(designs[0]),
+        rows: designs,
+        rowIds: designRowIds
+      }];
+    }
+
+
+    const tableHead = document.getElementById('designTableHead');
+    const table = document.getElementById('designTable');
+    const masterlistBody = document.getElementById('masterlistRows');
+    const masterlistSearch = document.getElementById('masterlistSearch');
+    const PAGE_SIZE = 10;
+    let currentPage = 1;
+    let filteredDesigns = designs;
+    let masterlistRecords = [];
+    let masterlistPage = 1;
+
+    function renderTable(list = designs) {
+      filteredDesigns = list;
+      const pageCount = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+      currentPage = Math.min(currentPage, pageCount);
+      const headers = designHeaders.length ? designHeaders : designs.length ? Object.keys(designs[0]) : [];
+      tableHead.innerHTML = headers.length ? `
+        <tr class="bg-[#fde3e5] border-b border-[#ffabb2]">
+          ${headers.map(header => `<th class="text-left px-2 py-3 font-extrabold whitespace-nowrap">${escapeHtml(header)}</th>`).join('')}
+        </tr>
+      ` : '';
+
+      if (!list.length) {
+        table.innerHTML = `
+          <tr>
+            <td colspan="${Math.max(headers.length, 1)}" class="px-2 py-6 text-center text-gray-400">${usingImportedData ? 'No rows in the selected worksheet.' : 'Import a workbook to display its rows here.'}</td>
+          </tr>
+        `;
+        updatePagination(pageCount);
+        return;
+      }
+
+      const startIndex = (currentPage - 1) * PAGE_SIZE;
+      table.innerHTML = list.slice(startIndex, startIndex + PAGE_SIZE).map(record => {
+        const rowIndex = designs.indexOf(record);
+        return `
+        <tr data-row-index="${rowIndex}" tabindex="0" aria-label="View details for row ${rowIndex + 1}" class="cursor-pointer border-b border-gray-200 hover:bg-gray-50">
+          ${headers.map(header => `<td class="px-2 py-2.5">${escapeHtml(record[header] ?? '')}</td>`).join('')}
+        </tr>
+      `;
+      }).join('');
+      updatePagination(pageCount);
+    }
+
+    function updatePagination(pageCount) {
+      const start = filteredDesigns.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+      const end = Math.min(currentPage * PAGE_SIZE, filteredDesigns.length);
+      document.getElementById('pageSummary').textContent = `${start}-${end} of ${filteredDesigns.length} rows`;
+      document.getElementById('pageNumber').textContent = `${currentPage} / ${pageCount}`;
+      document.getElementById('previousPage').disabled = currentPage <= 1;
+      document.getElementById('nextPage').disabled = currentPage >= pageCount;
+    }
+
+    function renderMasterlist() {
+      masterlistRecords = workbookSheets.flatMap(sheet => (sheet.rows || []).map((record, index) => ({
+        sheetName: sheet.name || 'Imported sheet',
+        headers: Array.isArray(sheet.headers) ? sheet.headers : Object.keys(record),
+        record,
+        rowId: sheet.rowIds?.[index] || `${sheet.name || 'sheet'}-${index}`,
+        sourceIndex: index
+      })));
+      const brandCounts = new Map();
+      workbookSheets.forEach(sheet => {
+        const headers = Array.isArray(sheet.headers) ? sheet.headers : Object.keys(sheet.rows?.[0] || {});
+        const brandHeader = headers.find(header => header.toLowerCase().replace(/[^a-z0-9]/g, '').includes('brand'));
+        if (!brandHeader) return;
+        (sheet.rows || []).forEach(record => {
+          const brand = String(record[brandHeader] ?? '').trim() || 'Unspecified';
+          brandCounts.set(brand, (brandCounts.get(brand) || 0) + 1);
+        });
+      });
+      const totalRows = workbookSheets.reduce((total, sheet) => total + (sheet.rows?.length || 0), 0);
+      document.getElementById('masterlistTotalRows').textContent = totalRows.toLocaleString();
+      document.getElementById('masterlistSheetCount').textContent = workbookSheets.length.toLocaleString();
+      document.getElementById('masterlistBrandCount').textContent = brandCounts.size.toLocaleString();
+      document.getElementById('masterlistFileInfo').textContent = workbookSheets.length
+        ? `${workbookSheets.length} worksheet(s) · ${activeSheetName ? `current sheet: ${activeSheetName}` : 'all imported data'}`
+        : 'No workbook is loaded. Import a file to see all sheets and row counts.';
+      document.getElementById('masterlistWorksheets').innerHTML = workbookSheets.length
+        ? workbookSheets.map(sheet => `<tr class="border-t border-gray-100"><td class="px-4 py-2.5 font-semibold">${escapeHtml(sheet.name || 'Imported sheet')}</td><td class="px-4 py-2.5 text-right">${(sheet.rows || []).length.toLocaleString()}</td></tr>`).join('')
+        : '<tr><td colspan="2" class="px-4 py-3 text-gray-500">No worksheets imported.</td></tr>';
+      document.getElementById('masterlistBrands').innerHTML = [...brandCounts.entries()].sort((left, right) => left[0].localeCompare(right[0])).map(([brand, count]) => `<tr class="border-t border-gray-100"><td class="px-4 py-2.5 font-semibold">${escapeHtml(brand)}</td><td class="px-4 py-2.5 text-right">${count.toLocaleString()}</td></tr>`).join('');
+      document.getElementById('masterlistBrandEmpty').classList.toggle('hidden', brandCounts.size > 0);
+      renderMasterlistRows();
+    }
+
+    function renderMasterlistRows() {
+      const headers = [...new Set(masterlistRecords.flatMap(item => item.headers))];
+      const query = masterlistSearch.value.trim().toLowerCase();
+      const filtered = masterlistRecords.filter(item => `${item.sheetName} ${Object.values(item.record).join(' ')}`.toLowerCase().includes(query));
+      const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      masterlistPage = Math.min(masterlistPage, pageCount);
+      const startIndex = (masterlistPage - 1) * PAGE_SIZE;
+      const pageRows = filtered.slice(startIndex, startIndex + PAGE_SIZE);
+      document.getElementById('masterlistHead').innerHTML = headers.length ? `<tr class="bg-[#fde3e5] text-[9px] uppercase text-gray-600"><th class="whitespace-nowrap px-3 py-2.5">Worksheet</th>${headers.map(header => `<th class="whitespace-nowrap px-3 py-2.5">${escapeHtml(header)}</th>`).join('')}</tr>` : '';
+      masterlistBody.innerHTML = pageRows.map(item => `<tr data-master-index="${masterlistRecords.indexOf(item)}" tabindex="0" aria-label="View ${escapeHtml(item.sheetName)} row details" class="cursor-pointer border-t border-gray-100 hover:bg-gray-50"><td class="whitespace-nowrap px-3 py-2.5 font-bold">${escapeHtml(item.sheetName)}</td>${headers.map(header => `<td class="whitespace-nowrap px-3 py-2.5">${escapeHtml(item.record[header] ?? '')}</td>`).join('')}</tr>`).join('');
+      if (!pageRows.length) masterlistBody.innerHTML = `<tr><td colspan="${headers.length + 1}" class="px-3 py-6 text-center text-gray-500">${masterlistRecords.length ? 'No rows match your search.' : 'No imported workbook rows.'}</td></tr>`;
+      const start = filtered.length ? startIndex + 1 : 0;
+      const end = Math.min(startIndex + PAGE_SIZE, filtered.length);
+      document.getElementById('masterlistRange').textContent = `${start}-${end} of ${filtered.length} rows`;
+      document.getElementById('masterlistPageNumber').textContent = `${masterlistPage} / ${pageCount}`;
+      document.getElementById('masterlistPrevious').disabled = masterlistPage <= 1;
+      document.getElementById('masterlistNext').disabled = masterlistPage >= pageCount;
+      document.getElementById('masterlistRowSummary').textContent = `${filtered.length.toLocaleString()} matching row(s) across ${workbookSheets.length} worksheet(s)`;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    }
+
+    function getDesignIdentity(record, index, headers, rowId) {
+      const normalizedHeaders = headers.map(header => header.toLowerCase().replace(/[^a-z0-9]/g, ''));
+      const nameIndex = normalizedHeaders.findIndex(header => /^(stylename|style|designname|name|catalogname)$/.test(header));
+      const brandIndex = normalizedHeaders.findIndex(header => header.includes('brand'));
+      return {
+        rowId,
+        rowName: String(record[headers[nameIndex >= 0 ? nameIndex : 0]] ?? `Row ${index + 1}`).trim(),
+        rowBrand: brandIndex >= 0 ? String(record[headers[brandIndex]] ?? '').trim() : ''
+      };
+    }
+
+    function openAdminRowDetails(index) {
+      const record = designs[index];
+      if (!record) return;
+      const headers = designHeaders.length ? designHeaders : Object.keys(record);
+      openAdminRecordDetails(record, headers, designRowIds[index], index, activeSheetName);
+    }
+
+    function openAdminRecordDetails(record, headers, rowId, index, sheetName = '') {
+      const identity = getDesignIdentity(record, index, headers, rowId);
+      const normalize = value => String(value || '').trim().toLowerCase();
+      const matchesRow = activity => activity.rowId ? activity.rowId === identity.rowId : normalize(activity.rowName) === normalize(identity.rowName) && (!identity.rowBrand || normalize(activity.rowBrand) === normalize(identity.rowBrand));
+      const visits = activityEntries.filter(activity => !Array.isArray(activity.changes) && matchesRow(activity));
+      const changes = activityEntries.filter(activity => activity.employee !== 'Sub-admin' && Array.isArray(activity.changes) && activity.changes.length && matchesRow(activity));
+
+      document.getElementById('adminRowTitle').textContent = identity.rowName || `Row ${index + 1}`;
+      document.getElementById('adminRowSubtitle').textContent = `${sheetName ? `${sheetName} · ` : ''}${identity.rowBrand ? `${identity.rowBrand} · ` : ''}Imported row ${index + 1}`;
+      document.getElementById('adminRowFields').innerHTML = headers.map(header => {
+        const value = record[header];
+        return `<div class="grid gap-1 py-3 sm:grid-cols-[180px_1fr] sm:gap-4"><div class="text-[9px] font-bold uppercase tracking-[.7px] text-gray-500">${escapeHtml(header)}</div><div class="break-words text-[11px] text-gray-800">${escapeHtml(typeof value === 'object' && value !== null ? JSON.stringify(value) : value ?? '—')}</div></div>`;
+      }).join('');
+      document.getElementById('adminVisitCount').textContent = `${visits.length} visit${visits.length === 1 ? '' : 's'}`;
+      document.getElementById('adminRowVisitors').innerHTML = visits.length ? visits.map(visit => `<div class="flex flex-wrap items-center justify-between gap-2 rounded border border-gray-200 bg-gray-50 px-3 py-2"><span class="text-[10px] font-bold">${escapeHtml(visit.employee || 'Employee')}</span><span class="text-[9px] text-gray-500">${escapeHtml(visit.recorded || 'Time not recorded')}</span></div>`).join('') : '<p class="rounded border border-dashed border-gray-300 px-3 py-3 text-[10px] text-gray-500">No employee has opened this catalog row yet.</p>';
+      document.getElementById('adminChangeCount').textContent = `${changes.length} edit${changes.length === 1 ? '' : 's'}`;
+      document.getElementById('adminRowChanges').innerHTML = changes.length ? changes.map(change => `<div class="rounded border border-gray-200 bg-gray-50 px-3 py-2"><div class="flex flex-wrap items-center justify-between gap-2"><span class="text-[10px] font-bold">${escapeHtml(change.employee || 'Employee')}</span><span class="text-[9px] text-gray-500">${escapeHtml(change.recorded || 'Time not recorded')}</span></div><div class="mt-2 space-y-1">${change.changes.map(item => `<p class="text-[9px] text-gray-700"><b>${escapeHtml(item.header)}:</b> ${escapeHtml(item.before || '—')} <span class="px-1 text-gray-400">→</span> ${escapeHtml(item.after || '—')}</p>`).join('')}</div></div>`).join('') : '<p class="rounded border border-dashed border-gray-300 px-3 py-3 text-[10px] text-gray-500">No employee edits recorded for this row.</p>';
+      document.getElementById('adminRowDetails').showModal();
+    }
+
+    table.addEventListener('click', event => {
+      const row = event.target.closest('[data-row-index]');
+      if (row) openAdminRowDetails(Number(row.dataset.rowIndex));
+    });
+
+    table.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const row = event.target.closest('[data-row-index]');
+      if (row) {
+        event.preventDefault();
+        openAdminRowDetails(Number(row.dataset.rowIndex));
+      }
+    });
+
+    document.getElementById('closeAdminRowDetails').addEventListener('click', () => document.getElementById('adminRowDetails').close());
+    document.getElementById('closeAdminRowDetailsFooter').addEventListener('click', () => document.getElementById('adminRowDetails').close());
+
+    renderTable();
+
+
+    /*
+    * Show whether an imported worksheet is available.
+     */
+
+    const importBanner =
+        document.getElementById(
+            'importBanner'
+        );
+
+
+    function renderImportBanner() {
+
+        if (usingImportedData) {
+
+            importBanner.className =
+                'is-imported';
+
+
+            importBanner.innerHTML = `
+              <span>✓ Showing ${designs.length} row(s) from the imported Excel worksheet.</span>
+            `;
+
+        }
+        else {
+
+            importBanner.className =
+                'is-sample';
+
+
+            importBanner.innerHTML = `
+              <span>No Excel worksheet is loaded.</span>
+                <a href="export.html" style="text-decoration:underline;font-weight:700;">Import an Excel file</a>
+            `;
+
+        }
+
+    }
+
+    renderImportBanner();
+
+
+    // Update the KPI totals to reflect the current dataset.
+    (function updateKpis() {
+
+        const grandTotalDesigns =
+            document.getElementById(
+                'grandTotalDesigns'
+            );
+
+
+        const brandTotalDesigns =
+            document.getElementById(
+                'brandTotalDesigns'
+            );
+
+
+        if (usingImportedData) {
+
+            grandTotalDesigns.textContent =
+                designs.length.toLocaleString();
+
+
+            const pumaCount =
+                designs.filter(
+                function (design) {
+                  return Object.entries(design).some(function ([key, value]) {
+                    return (
+                      key.trim().toLowerCase() === 'brand' &&
+                      String(value || '').toUpperCase().includes('PUMA')
+                    );
+                  });
+                }
+              ).length;
+
+
+            brandTotalDesigns.textContent =
+                pumaCount.toLocaleString();
+
+        }
+
+    })();
+
+
+    // Sidebar navigation
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => {
+          b.classList.remove('active','bg-[#fde5e7]','border','border-[#ffabb2]');
+        });
+        btn.classList.add('active','bg-[#fde5e7]','border','border-[#ffabb2]');
+        const page = btn.dataset.page;
+        const showMasterlist = page === 'CSI Masterlist';
+        document.getElementById('overviewView').classList.toggle('hidden', showMasterlist);
+        document.getElementById('csiMasterlistView').classList.toggle('hidden', !showMasterlist);
+        document.getElementById('pageTitle').textContent =
+          page === 'Overview' ? 'Admin Dashboard' : page;
+        document.getElementById('pageSubtitle').textContent =
+          page === 'Overview' ? 'Monitor and Manage Apparel Records' : `Manage ${page.toLowerCase()}`;
+        if (showMasterlist) renderMasterlist();
+      });
+    });
+
+    masterlistSearch.addEventListener('input', () => {
+      masterlistPage = 1;
+      renderMasterlistRows();
+    });
+    document.getElementById('masterlistPrevious').addEventListener('click', () => {
+      if (masterlistPage > 1) {
+        masterlistPage -= 1;
+        renderMasterlistRows();
+      }
+    });
+    document.getElementById('masterlistNext').addEventListener('click', () => {
+      if (masterlistPage < Math.ceil(masterlistRecords.length / PAGE_SIZE)) {
+        masterlistPage += 1;
+        renderMasterlistRows();
+      }
+    });
+    masterlistBody.addEventListener('click', event => {
+      const row = event.target.closest('[data-master-index]');
+      if (!row) return;
+      const item = masterlistRecords[Number(row.dataset.masterIndex)];
+      if (item) openAdminRecordDetails(item.record, item.headers, item.rowId, item.sourceIndex, item.sheetName);
+    });
+    masterlistBody.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const row = event.target.closest('[data-master-index]');
+      if (!row) return;
+      event.preventDefault();
+      const item = masterlistRecords[Number(row.dataset.masterIndex)];
+      if (item) openAdminRecordDetails(item.record, item.headers, item.rowId, item.sourceIndex, item.sheetName);
+    });
+
+
+    // Mobile sidebar drawer
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+    function closeMobileMenu() {
+      document.body.classList.remove('mobile-menu-open');
+    }
+
+    mobileMenuBtn.addEventListener('click', () => {
+      document.body.classList.toggle('mobile-menu-open');
+    });
+
+    // Close the drawer after selecting a navigation item.
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', closeMobileMenu);
+    });
+
+    // Close when tapping outside the drawer.
+    document.addEventListener('click', (event) => {
+      if (
+        document.body.classList.contains('mobile-menu-open') &&
+        !event.target.closest('aside') &&
+        !event.target.closest('#mobileMenuBtn')
+      ) {
+        closeMobileMenu();
+      }
+    });
+
+    // Close the drawer when resizing back to desktop.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) closeMobileMenu();
+    });
+
+    // Search table
+    document.getElementById('searchInput').addEventListener('input', e => {
+      const q = e.target.value.toLowerCase().trim();
+      const filtered = designs.filter(d => Object.values(d).some(v => String(v).toLowerCase().includes(q)));
+      currentPage = 1;
+      renderTable(filtered);
+    });
+
+    document.getElementById('previousPage').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage -= 1;
+        renderTable(filteredDesigns);
+      }
+    });
+
+    document.getElementById('nextPage').addEventListener('click', () => {
+      if (currentPage < Math.ceil(filteredDesigns.length / PAGE_SIZE)) {
+        currentPage += 1;
+        renderTable(filteredDesigns);
+      }
+    });
+
+    // Brand dropdown
+    const brandBtn = document.getElementById('brandSelect');
+    const brandMenu = document.getElementById('brandMenu');
+    brandBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const r = brandBtn.getBoundingClientRect();
+      brandMenu.style.left = `${r.left}px`;
+      brandMenu.style.top = `${r.bottom + 5}px`;
+      brandMenu.classList.toggle('hidden');
+    });
+    document.querySelectorAll('.brand-option').forEach(option => {
+      option.addEventListener('click', () => {
+        brandBtn.innerHTML = `${option.textContent} <span class="text-[9px]">▼</span>`;
+        brandMenu.classList.add('hidden');
+      });
+    });
+    document.addEventListener('click', () => brandMenu.classList.add('hidden'));
+
+    // Notifications
+    document.getElementById('notificationBtn').addEventListener('click', () => {
+      document.getElementById('notifDot').classList.toggle('hidden');
+      alert('No new notifications.');
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to log out?')) {
+        alert('Logged out (frontend demo only).');
+      }
+    });
+
+    // Proper Light / Dark theme
+    const lightBtn = document.getElementById('lightBtn');
+    const darkBtn = document.getElementById('darkBtn');
+
+    function setTheme(theme) {
+      const isDark = theme === 'dark';
+      document.documentElement.classList.toggle('dark', isDark);
+      document.body.classList.toggle('theme-dark', isDark);
+
+      lightBtn.classList.toggle('bg-[#fde5e7]', !isDark);
+      lightBtn.classList.toggle('text-black', !isDark);
+      darkBtn.classList.toggle('bg-[#222]', isDark);
+      darkBtn.classList.toggle('text-white', isDark);
+
+      localStorage.setItem('apparel-theme', theme);
+    }
+
+    lightBtn.addEventListener('click', () => setTheme('light'));
+    darkBtn.addEventListener('click', () => setTheme('dark'));
+
+    // Restore the user's selected theme
+    setTheme(localStorage.getItem('apparel-theme') || 'light');
+  </script>
+</body>
+</html>
