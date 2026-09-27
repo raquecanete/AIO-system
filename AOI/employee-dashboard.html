@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Apparel One — Employee Dashboard</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<style>
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
+		body { margin: 0; font-family: 'Montserrat', sans-serif; background: #f6f6f4; color: #20201f; }
+		.nav-link { transition: background-color .18s ease, color .18s ease; }
+		.nav-link.active { background: #fce5e5; color: #b83d43; }
+		.fade-up { animation: fadeUp .45s ease both; }
+		@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+		.delay-1 { animation-delay: .06s; }
+		.delay-2 { animation-delay: .12s; }
+		.delay-3 { animation-delay: .18s; }
+		.scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+		.scrollbar::-webkit-scrollbar-thumb { background: #d0d0ce; border-radius: 8px; }
+		@media (max-width: 767px) {
+			body { overflow: hidden; }
+			aside { position: fixed !important; inset: 0 auto 0 0; width: 250px !important; height: 100vh; z-index: 60; transform: translateX(-105%); transition: transform .25s ease; box-shadow: 8px 0 25px rgba(0,0,0,.12); }
+			body.menu-open aside { transform: translateX(0); }
+			body.menu-open::after { content: ''; position: fixed; inset: 0; background: rgba(0,0,0,.38); z-index: 50; }
+			#mobileMenuBtn { display: flex !important; }
+			main { width: 100% !important; min-width: 0 !important; }
+			.stats-grid { grid-template-columns: minmax(0, 1fr) !important; }
+			.lower-grid { grid-template-columns: minmax(0, 1fr) !important; }
+			table { min-width: 740px; }
+		}
+		@media (min-width: 768px) { #mobileMenuBtn { display: none !important; } }
+	</style>
+</head>
+<body>
+	<div class="flex h-screen">
+		<aside class="w-[220px] shrink-0 border-r border-[#e7e5e2] bg-white flex flex-col">
+			<a href="index.html" class="h-[90px] border-b border-[#e7e5e2] flex items-center justify-center text-inherit no-underline" aria-label="Apparel One home">
+				<div class="text-center leading-none select-none">
+					<div class="relative inline-block text-[38px] font-black tracking-[-5px]">AOI<span class="absolute left-[1px] bottom-0 text-[15px] text-[#f04b45]">▲</span></div>
+					<div class="text-[10px] font-extrabold mt-[-1px]">APPAREL ONE</div>
+					<div class="text-[7px] tracking-[2px] text-[#777] mt-1">INDONESIA</div>
+				</div>
+			</a>
+
+			<div class="px-5 pt-7 pb-2 text-[9px] font-bold uppercase tracking-[1.5px] text-[#999]">Workspace</div>
+			<nav class="px-3 space-y-1" aria-label="Main navigation">
+				<a href="#overview" class="nav-link active flex h-10 items-center gap-3 rounded px-3 text-[12px] font-bold" data-section="overview"><i data-lucide="layout-dashboard" class="h-4 w-4"></i>Overview</a>
+				<a href="#designs" class="nav-link flex h-10 items-center gap-3 rounded px-3 text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-section="designs"><i data-lucide="layers-2" class="h-4 w-4"></i>CSI Masterlist</a>
+				<a href="#activity" class="nav-link flex h-10 items-center gap-3 rounded px-3 text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-section="activity"><i data-lucide="activity" class="h-4 w-4"></i>Activity</a>
+			</nav>
+
+			<div class="mt-auto border-t border-[#e7e5e2] p-4">
+				<div class="mb-4 flex items-center gap-3">
+					<div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5e7e5] text-[11px] font-extrabold text-[#963e3d]">RC</div>
+					<div class="min-w-0"><div class="truncate text-[11px] font-extrabold">Raque Canete</div><div class="mt-0.5 text-[9px] text-[#777]">Apparel Designer</div></div>
+				</div>
+				<button id="logoutBtn" class="flex h-9 w-full items-center gap-3 rounded px-3 text-[11px] font-bold text-[#a94a4a] hover:bg-[#fff4f2]"><i data-lucide="log-out" class="h-4 w-4"></i>Log Out</button>
+			</div>
+		</aside>
+
+		<main class="min-w-0 flex-1 flex flex-col">
+			<header class="flex h-[72px] shrink-0 items-center gap-3 border-b border-[#e7e5e2] bg-white px-4 sm:px-7">
+				<button id="mobileMenuBtn" class="hidden h-9 w-9 shrink-0 items-center justify-center rounded border border-[#e7e5e2]" aria-label="Open menu"><i data-lucide="menu" class="h-4 w-4"></i></button>
+				<div class="relative w-full max-w-[340px]">
+					<i data-lucide="search" class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#888]"></i>
+					<input id="searchInput" type="search" placeholder="Search catalog..." class="h-9 w-full rounded border border-[#deddda] bg-[#fbfbfa] pl-9 pr-3 text-[11px] outline-none focus:border-[#c95a5f]" />
+				</div>
+				<div class="ml-auto flex items-center gap-3">
+					<span class="hidden text-[10px] font-semibold text-[#777] sm:block">MONDAY, SEPTEMBER 28</span>
+					<button id="notificationBtn" class="relative flex h-9 w-9 items-center justify-center rounded border border-[#e7e5e2] hover:bg-[#f7f7f5]" aria-label="Notifications"><i data-lucide="bell" class="h-4 w-4"></i><span class="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full bg-[#f04b45]"></span></button>
+				</div>
+			</header>
+
+			<section class="scrollbar flex-1 overflow-auto" id="overview">
+				<div class="mx-auto w-full max-w-[1440px] p-4 sm:p-7">
+					<div class="mb-6 flex flex-wrap items-end justify-between gap-3 fade-up">
+						<div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">Your workspace</p><h1 class="text-[22px] font-extrabold tracking-[-.5px]">Good morning, Raque</h1><p class="mt-1 text-[11px] text-[#777]">Here’s the latest from your imported catalog.</p></div>
+						<button id="exportBtn" class="flex h-9 items-center gap-2 rounded border border-[#d9d7d3] bg-white px-3 text-[10px] font-bold hover:bg-[#faf9f7]"><i data-lucide="download" class="h-4 w-4"></i>Export designs</button>
+					</div>
+
+					<div class="stats-grid grid grid-cols-3 gap-3">
+						<article class="fade-up rounded border border-[#e4e1dc] bg-white p-4 delay-1">
+							<div class="flex items-center justify-between"><span class="text-[10px] font-bold text-[#666]">Imported rows</span><span class="flex h-8 w-8 items-center justify-center rounded bg-[#f9eeee] text-[#b44e50]"><i data-lucide="table-properties" class="h-4 w-4"></i></span></div>
+							<div id="totalDesigns" class="mt-3 text-[25px] font-extrabold">0</div><div class="mt-1 text-[9px] text-[#888]">Across all worksheets</div>
+						</article>
+						<article class="fade-up rounded border border-[#e4e1dc] bg-white p-4 delay-2">
+							<div class="flex items-center justify-between"><span class="text-[10px] font-bold text-[#666]">In review</span><span class="flex h-8 w-8 items-center justify-center rounded bg-[#fff4e1] text-[#9c6c1c]"><i data-lucide="clock-3" class="h-4 w-4"></i></span></div>
+							<div id="reviewDesigns" class="mt-3 text-[25px] font-extrabold">0</div><div class="mt-1 text-[9px] text-[#888]">Waiting for feedback</div>
+						</article>
+						<article class="fade-up rounded border border-[#e4e1dc] bg-white p-4 delay-3">
+							<div class="flex items-center justify-between"><span class="text-[10px] font-bold text-[#666]">Approved</span><span class="flex h-8 w-8 items-center justify-center rounded bg-[#eaf4ed] text-[#39714a]"><i data-lucide="circle-check" class="h-4 w-4"></i></span></div>
+							<div id="approvedDesigns" class="mt-3 text-[25px] font-extrabold">0</div><div class="mt-1 text-[9px] text-[#888]">Ready for production</div>
+						</article>
+					</div>
+
+					<div class="lower-grid mt-5 grid grid-cols-[minmax(0,1.7fr)_minmax(250px,.8fr)] gap-4">
+						<section id="designs" class="fade-up min-w-0 rounded border border-[#e4e1dc] bg-white delay-2">
+							<div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#eceae6] px-4 py-4 sm:px-5">
+								<div><h2 class="text-[12px] font-extrabold">CSI Masterlist</h2><p id="catalogSource" class="mt-1 text-[9px] text-[#888]">Rows from every imported worksheet</p></div>
+							</div>
+							<div class="scrollbar overflow-x-auto">
+								<table class="w-full border-collapse text-left text-[10px]">
+									<thead id="designTableHead"></thead>
+									<tbody id="designTable"></tbody>
+								</table>
+							</div>
+							<div id="emptyState" class="hidden px-5 py-10 text-center text-[11px] text-[#888]">No designs match your search.</div>
+							<div class="flex items-center justify-between gap-3 border-t border-[#eceae6] px-4 py-3 text-[9px] text-[#888] sm:px-5"><span id="recordCount">0 rows</span><div class="flex items-center gap-2"><button id="prevCatalogRows" class="rounded border border-[#deddda] px-2.5 py-1.5 font-bold disabled:opacity-40" disabled>Previous</button><span id="catalogPageNumber" class="min-w-[38px] text-center font-bold"></span><button id="nextCatalogRows" class="rounded border border-[#deddda] px-2.5 py-1.5 font-bold disabled:opacity-40" disabled>Next</button></div></div>
+						</section>
+
+						<aside id="activity" class="fade-up rounded border border-[#e4e1dc] bg-white delay-3">
+							<div class="flex items-center justify-between border-b border-[#eceae6] px-4 py-4"><h2 class="text-[12px] font-extrabold">Recent activity</h2><i data-lucide="ellipsis" class="h-4 w-4 text-[#888]"></i></div>
+                            <div id="employeeActivityFeed" class="space-y-5 p-4"></div>
+							<div class="mx-4 border-t border-[#eceae6] py-3"><span class="text-[9px] text-[#999]">Employee activity is shared with the sub-admin workspace.</span></div>
+						</aside>
+					</div>
+				</div>
+			</section>
+		</main>
+	</div>
+
+	<dialog id="catalogRowDialog" class="max-h-[85vh] w-[min(560px,calc(100vw-28px))] rounded-md shadow-xl backdrop:bg-black/40">
+		<div class="flex items-start justify-between border-b border-[#eceae6] p-5">
+			<div><p class="text-[9px] font-bold uppercase tracking-[1px] text-[#b65a58]">Catalog details</p><h2 id="catalogRowTitle" class="mt-1 text-[15px] font-extrabold">Catalog row</h2><p id="catalogRowSubtitle" class="mt-1 text-[10px] text-[#888]"></p></div>
+			<button id="closeCatalogRowDialog" class="rounded p-1 text-[#777] hover:bg-[#f5f4f1]" type="button" aria-label="Close details"><i data-lucide="x" class="h-4 w-4"></i></button>
+		</div>
+		<div id="catalogRowFields" class="scrollbar max-h-[60vh] overflow-y-auto p-5"></div>
+		<div class="flex items-center justify-between border-t border-[#eceae6] px-5 py-3"><button id="editCatalogRow" class="rounded border border-[#deddda] px-3 py-2 text-[10px] font-bold" type="button">Edit row</button><div class="flex gap-2"><button id="closeCatalogRowFooter" class="rounded border border-[#deddda] px-3 py-2 text-[10px] font-bold" type="button">Close</button><button id="saveCatalogRow" class="hidden rounded bg-[#b84e51] px-3 py-2 text-[10px] font-bold text-white" type="button">Save changes</button></div></div>
+	</dialog>
+
+	<script>
+		const STORAGE_KEY = 'aoi_imported_designs';
+		const ROW_IDS_KEY = 'aoi_imported_row_ids';
+		const WORKBOOK_KEY = 'aoi_imported_workbook';
+		const ACTIVE_SHEET_KEY = 'aoi_active_sheet_name';
+		const ACTIVITY_STORAGE_KEY = 'aoi_employee_activity';
+		const PERMISSIONS_KEY = 'aoi_employee_permissions';
+		const PAGE_SIZE = 10;
+		function getDesignValue(design, aliases, fallback = '') {
+			const entry = Object.entries(design).find(([key]) => aliases.includes(key.trim().toLowerCase()));
+			return entry ? entry[1] : fallback;
+		}
+
+		function employeeCanEditRows() {
+			const email = sessionStorage.getItem('aoiEmail') || '';
+			if (!email) return true;
+			try {
+				const permissions = JSON.parse(localStorage.getItem(PERMISSIONS_KEY) || '{}');
+				return permissions[email] !== 'view';
+			} catch (error) {
+				return true;
+			}
+		}
+
+		let workbookSheets = [];
+		let designs = [];
+		let catalogHeaders = [];
+		let currentPage = 1;
+		let hasImportedRows = false;
+		let editingCatalogIndex = null;
+		try {
+			const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+			const savedWorkbook = JSON.parse(localStorage.getItem(WORKBOOK_KEY) || '[]');
+			if (Array.isArray(savedWorkbook) && savedWorkbook.length) workbookSheets = savedWorkbook;
+			else if (Array.isArray(stored) && stored.length) {
+				const headers = JSON.parse(localStorage.getItem('aoi_imported_headers') || 'null') || Object.keys(stored[0]);
+				const rowIds = JSON.parse(localStorage.getItem(ROW_IDS_KEY) || 'null') || stored.map((_, index) => `aoi-row-${index}`);
+				workbookSheets = [{ name: localStorage.getItem(ACTIVE_SHEET_KEY) || 'Imported data', headers, rows: stored, rowIds }];
+			}
+			workbookSheets.forEach(sheet => {
+				const sheetHeaders = Array.isArray(sheet.headers) ? sheet.headers : Object.keys(sheet.rows?.[0] || {});
+				sheet.rowIds = Array.isArray(sheet.rowIds) && sheet.rowIds.length === (sheet.rows || []).length
+					? sheet.rowIds
+					: (sheet.rows || []).map((_, index) => `${sheet.name || 'sheet'}-${index}`);
+				catalogHeaders = [...new Set([...catalogHeaders, ...sheetHeaders])];
+				(sheet.rows || []).forEach((record, sheetRowIndex) => {
+					const index = designs.length;
+					const rowId = sheet.rowIds?.[sheetRowIndex] || `${sheet.name || 'sheet'}-${sheetRowIndex}`;
+					designs.push({
+						...record,
+						_sourceIndex: index,
+						_sourceSheet: sheet.name || 'Imported data',
+						_sourceSheetRowIndex: sheetRowIndex,
+						_sourceId: rowId,
+						_sourceRecord: record,
+						name: getDesignValue(record, ['name', 'style', 'style name', 'design name'], 'Untitled style'),
+						brand: getDesignValue(record, ['brand'], 'AOI'),
+						status: getDesignValue(record, ['status'], '')
+					});
+				});
+			});
+			hasImportedRows = workbookSheets.some(sheet => (sheet.rows || []).length > 0);
+		} catch (error) {
+			console.warn('Could not read imported workbook data.', error);
+		}
+
+		const table = document.getElementById('designTable');
+		const tableHead = document.getElementById('designTableHead');
+		const searchInput = document.getElementById('searchInput');
+
+		function renderDesigns() {
+			const query = searchInput.value.trim().toLowerCase();
+			const filtered = designs.filter(design => `${design._sourceSheet} ${Object.values(design._sourceRecord).join(' ')}`.toLowerCase().includes(query));
+			const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+			currentPage = Math.min(currentPage, pageCount);
+			const pageRows = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+			tableHead.innerHTML = `<tr class="bg-[#faf9f7] text-[9px] uppercase tracking-[.7px] text-[#777]"><th class="whitespace-nowrap px-3 py-3 font-bold">Worksheet</th>${catalogHeaders.map(header => `<th class="whitespace-nowrap px-3 py-3 font-bold">${escapeHtml(header)}</th>`).join('')}<th class="px-3 py-3 font-bold">Details</th></tr>`;
+			table.innerHTML = pageRows.map(design => `<tr class="border-t border-[#f0efec] hover:bg-[#fcfbf9]"><td class="whitespace-nowrap px-3 py-3 font-bold text-[#555]">${escapeHtml(design._sourceSheet)}</td>${catalogHeaders.map(header => `<td class="max-w-[280px] px-3 py-3 text-[#555]">${escapeHtml(design._sourceRecord[header] ?? '')}</td>`).join('')}<td class="px-3 py-3"><button type="button" data-view-catalog-row="${design._sourceIndex}" class="whitespace-nowrap rounded border border-[#deddda] px-2 py-1.5 text-[9px] font-bold hover:bg-[#f7f7f5]">View details</button></td></tr>`).join('');
+			document.getElementById('emptyState').classList.toggle('hidden', filtered.length > 0);
+			document.getElementById('emptyState').textContent = hasImportedRows ? 'No rows match your search.' : 'No imported workbook is available.';
+			document.getElementById('recordCount').textContent = `${filtered.length} imported ${filtered.length === 1 ? 'row' : 'rows'}`;
+			document.getElementById('catalogPageNumber').textContent = `${currentPage} / ${pageCount}`;
+			document.getElementById('prevCatalogRows').disabled = currentPage <= 1;
+			document.getElementById('nextCatalogRows').disabled = currentPage >= pageCount;
+			document.getElementById('catalogSource').textContent = hasImportedRows ? `${filtered.length} matching row(s) across ${workbookSheets.length} imported worksheet(s)` : 'Import a workbook to populate the CSI Masterlist.';
+			document.getElementById('totalDesigns').textContent = designs.length;
+			document.getElementById('reviewDesigns').textContent = designs.filter(design => String(getDesignValue(design._sourceRecord, ['status'], '')).toLowerCase() === 'in review').length;
+			document.getElementById('approvedDesigns').textContent = designs.filter(design => String(getDesignValue(design._sourceRecord, ['status'], '')).toLowerCase() === 'approved').length;
+		}
+
+		function escapeHtml(value) {
+			return String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+		}
+
+		function recordEmployeeActivity(description, rowDetails = {}) {
+			try {
+				const entries = JSON.parse(localStorage.getItem(ACTIVITY_STORAGE_KEY) || '[]');
+				const email = sessionStorage.getItem('aoiEmail') || '';
+				const employee = sessionStorage.getItem('aoiName') || (email === 'employee@aoi.com' ? 'Raque Canete' : email.split('@')[0] || 'Employee');
+				entries.unshift({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, employee, description, recorded: new Date().toLocaleString(), ...rowDetails });
+				localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(entries.slice(0, 500)));
+			} catch (error) {
+				console.warn('Could not record employee activity.', error);
+			}
+		}
+
+		function openCatalogRow(sourceIndex) {
+			const design = designs.find(item => item._sourceIndex === sourceIndex);
+			if (!design) return;
+			editingCatalogIndex = sourceIndex;
+			const record = design._sourceRecord || design;
+			const rowName = String(design.name || 'Untitled style');
+			const rowBrand = String(design.brand || '');
+			document.getElementById('catalogRowTitle').textContent = rowName;
+			document.getElementById('catalogRowSubtitle').textContent = rowBrand ? `${rowBrand} · Catalog record` : 'Catalog record';
+			renderCatalogRowFields(record, false);
+			document.getElementById('editCatalogRow').classList.toggle('hidden', !hasImportedRows || !employeeCanEditRows());
+			document.getElementById('saveCatalogRow').classList.add('hidden');
+			recordEmployeeActivity(`Viewed catalog row: ${rowName}.`, { rowId: design._sourceId, rowName, rowBrand });
+			renderEmployeeActivity();
+			document.getElementById('catalogRowDialog').showModal();
+			lucide.createIcons();
+		}
+
+		function renderCatalogRowFields(record, editable) {
+			document.getElementById('catalogRowFields').innerHTML = Object.entries(record).map(([header, value], index) => {
+				const displayValue = typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value ?? '');
+				const field = editable
+					? `<input data-catalog-field-index="${index}" value="${escapeHtml(displayValue)}" class="h-9 w-full rounded border border-[#deddda] px-3 text-[11px] font-normal outline-none focus:border-[#c95a5f]" />`
+					: `<div class="break-words text-[11px] text-[#333]">${escapeHtml(displayValue || '—')}</div>`;
+				return `<label class="grid gap-1 border-b border-[#f0efec] py-3 sm:grid-cols-[150px_1fr] sm:items-center sm:gap-4"><span class="text-[9px] font-bold uppercase tracking-[.7px] text-[#888]">${escapeHtml(header)}</span>${field}</label>`;
+			}).join('');
+		}
+
+		function saveCatalogRow() {
+			if (!employeeCanEditRows()) {
+				const design = designs.find(item => item._sourceIndex === editingCatalogIndex);
+				if (design) renderCatalogRowFields(design._sourceRecord || design, false);
+				document.getElementById('editCatalogRow').classList.add('hidden');
+				document.getElementById('saveCatalogRow').classList.add('hidden');
+				return;
+			}
+			const design = designs.find(item => item._sourceIndex === editingCatalogIndex);
+			if (!design) return;
+			const original = design._sourceRecord || design;
+			const keys = Object.keys(original);
+			const updated = { ...original };
+			document.querySelectorAll('[data-catalog-field-index]').forEach(input => {
+				updated[keys[Number(input.dataset.catalogFieldIndex)]] = input.value.trim();
+			});
+			const changes = keys.filter(header => String(original[header] ?? '') !== String(updated[header] ?? '')).map(header => ({ header, before: String(original[header] ?? ''), after: String(updated[header] ?? '') }));
+			if (!changes.length) {
+				document.getElementById('catalogRowDialog').close();
+				return;
+			}
+			try {
+				const sheet = workbookSheets.find(item => item.name === design._sourceSheet);
+				if (!sheet) throw new Error('Imported worksheet is no longer available.');
+				sheet.rows[design._sourceSheetRowIndex] = updated;
+				sheet.headers = Object.keys(updated);
+				sheet.rowIds[design._sourceSheetRowIndex] = design._sourceId;
+				localStorage.setItem(WORKBOOK_KEY, JSON.stringify(workbookSheets));
+				if (design._sourceSheet === localStorage.getItem(ACTIVE_SHEET_KEY)) {
+					localStorage.setItem(STORAGE_KEY, JSON.stringify(sheet.rows));
+					localStorage.setItem('aoi_imported_headers', JSON.stringify(sheet.headers));
+					localStorage.setItem(ROW_IDS_KEY, JSON.stringify(sheet.rowIds));
+				}
+			} catch (error) {
+				console.error('Could not save catalog row changes.', error);
+				window.alert('Could not save row changes in this browser.');
+				return;
+			}
+			design._sourceRecord = updated;
+			Object.assign(design, updated, {
+				name: getDesignValue(updated, ['name', 'style', 'style name', 'design name'], 'Untitled style'),
+				brand: getDesignValue(updated, ['brand'], 'AOI'),
+				target: getDesignValue(updated, ['target', 'target date'], 'Not set'),
+				season: getDesignValue(updated, ['season'], 'S27'),
+				doc: getDesignValue(updated, ['doc', 'document n.', 'document no.', 'document number'], 'Design workspace'),
+				art: getDesignValue(updated, ['art', 'art #'], ''),
+				color: getDesignValue(updated, ['color', 'colorway'], ''),
+				status: getDesignValue(updated, ['status'], design.status)
+			});
+			const rowName = String(design.name || 'Untitled style');
+			const rowBrand = String(design.brand || '');
+			recordEmployeeActivity(`Updated catalog row: ${rowName}.`, { rowId: design._sourceId, rowName, rowBrand, changes });
+			renderDesigns();
+			renderEmployeeActivity();
+			document.getElementById('catalogRowTitle').textContent = rowName;
+			document.getElementById('catalogRowSubtitle').textContent = rowBrand ? `${rowBrand} · Catalog record` : 'Catalog record';
+			renderCatalogRowFields(updated, false);
+			document.getElementById('editCatalogRow').classList.remove('hidden');
+			document.getElementById('saveCatalogRow').classList.add('hidden');
+		}
+
+		function renderEmployeeActivity() {
+			const entries = JSON.parse(localStorage.getItem(ACTIVITY_STORAGE_KEY) || '[]');
+			const feed = document.getElementById('employeeActivityFeed');
+			feed.innerHTML = entries.slice(0, 3).map(entry => `<div class="flex gap-3"><span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f9eeee] text-[#b44e50]"><i data-lucide="activity" class="h-3.5 w-3.5"></i></span><div><p class="text-[10px] leading-relaxed"><b>${escapeHtml(entry.employee)}</b> ${escapeHtml(entry.description)}</p><p class="mt-1 text-[9px] text-[#999]">${escapeHtml(entry.recorded)}</p></div></div>`).join('') || '<p class="text-[10px] text-[#888]">No recent activity.</p>';
+			lucide.createIcons();
+		}
+
+		searchInput.addEventListener('input', () => {
+			currentPage = 1;
+			renderDesigns();
+		});
+		document.getElementById('prevCatalogRows').addEventListener('click', () => {
+			if (currentPage > 1) {
+				currentPage -= 1;
+				renderDesigns();
+			}
+		});
+		document.getElementById('nextCatalogRows').addEventListener('click', () => {
+			const matchingRows = designs.filter(design => `${design._sourceSheet} ${Object.values(design._sourceRecord).join(' ')}`.toLowerCase().includes(searchInput.value.trim().toLowerCase()));
+			if (currentPage < Math.ceil(matchingRows.length / PAGE_SIZE)) {
+				currentPage += 1;
+				renderDesigns();
+			}
+		});
+		table.addEventListener('click', event => {
+			const button = event.target.closest('[data-view-catalog-row]');
+			if (button) openCatalogRow(Number(button.dataset.viewCatalogRow));
+		});
+		document.getElementById('editCatalogRow').addEventListener('click', () => {
+			if (!employeeCanEditRows()) return;
+			const design = designs.find(item => item._sourceIndex === editingCatalogIndex);
+			if (!design) return;
+			renderCatalogRowFields(design._sourceRecord || design, true);
+			document.getElementById('editCatalogRow').classList.add('hidden');
+			document.getElementById('saveCatalogRow').classList.remove('hidden');
+		});
+		document.getElementById('saveCatalogRow').addEventListener('click', saveCatalogRow);
+		window.addEventListener('storage', event => {
+			if (event.key !== PERMISSIONS_KEY || !document.getElementById('catalogRowDialog').open) return;
+			const design = designs.find(item => item._sourceIndex === editingCatalogIndex);
+			if (!design) return;
+			if (!employeeCanEditRows()) {
+				renderCatalogRowFields(design._sourceRecord || design, false);
+				document.getElementById('editCatalogRow').classList.add('hidden');
+				document.getElementById('saveCatalogRow').classList.add('hidden');
+			}
+		});
+		document.getElementById('closeCatalogRowDialog').addEventListener('click', () => document.getElementById('catalogRowDialog').close());
+		document.getElementById('closeCatalogRowFooter').addEventListener('click', () => document.getElementById('catalogRowDialog').close());
+		document.getElementById('exportBtn').addEventListener('click', () => {
+			const columns = ['Worksheet', ...catalogHeaders];
+			const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+			const csv = [columns.map(csvCell).join(','), ...designs.map(design => [design._sourceSheet, ...catalogHeaders.map(header => design._sourceRecord[header] ?? '')].map(csvCell).join(','))].join('\n');
+			const link = document.createElement('a');
+			link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+			link.download = 'csi-masterlist.csv';
+			link.click();
+			URL.revokeObjectURL(link.href);
+		});
+		document.getElementById('logoutBtn').addEventListener('click', () => {
+			sessionStorage.removeItem('aoiLoggedIn');
+			sessionStorage.removeItem('aoiRole');
+			sessionStorage.removeItem('aoiEmail');
+			sessionStorage.removeItem('aoiName');
+			window.location.href = 'index.html';
+		});
+		document.getElementById('mobileMenuBtn').addEventListener('click', () => document.body.classList.toggle('menu-open'));
+		document.querySelectorAll('.nav-link').forEach((link) => link.addEventListener('click', () => {
+			document.querySelectorAll('.nav-link').forEach((item) => item.classList.remove('active'));
+			link.classList.add('active');
+			document.body.classList.remove('menu-open');
+		}));
+		document.getElementById('notificationBtn').addEventListener('click', () => {
+			window.alert('You are all caught up.');
+		});
+		renderDesigns();
+		recordEmployeeActivity('Viewed the employee dashboard.');
+		renderEmployeeActivity();
+		lucide.createIcons();
+	</script>
+</body>
+</html>

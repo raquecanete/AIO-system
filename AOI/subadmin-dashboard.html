@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apparel One — Sub-admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Montserrat', sans-serif; background: #f6f6f4; color: #20201f; }
+    .nav-link.active { background: #fce5e5; color: #b83d43; }
+    .scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar::-webkit-scrollbar-thumb { background: #d0d0ce; border-radius: 8px; }
+    dialog { border: 0; padding: 0; width: min(560px, calc(100vw - 28px)); max-height: 85vh; border-radius: 6px; box-shadow: 0 18px 60px rgba(0,0,0,.2); }
+    dialog::backdrop { background: rgba(26,25,24,.42); }
+    @media (max-width: 767px) {
+      body { overflow: hidden; }
+      aside { position: fixed !important; inset: 0 auto 0 0; width: 250px !important; height: 100vh; z-index: 60; transform: translateX(-105%); transition: transform .25s ease; box-shadow: 8px 0 25px rgba(0,0,0,.12); }
+      body.menu-open aside { transform: translateX(0); }
+      body.menu-open::after { content: ''; position: fixed; inset: 0; background: rgba(0,0,0,.38); z-index: 50; }
+      #mobileMenuBtn { display: flex !important; }
+      main { width: 100% !important; min-width: 0 !important; }
+      .stats-grid { grid-template-columns: minmax(0, 1fr) !important; }
+      table { min-width: 650px; }
+    }
+    @media (min-width: 768px) { #mobileMenuBtn { display: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="flex h-screen">
+    <aside class="flex w-[220px] shrink-0 flex-col border-r border-[#e7e5e2] bg-white">
+      <a href="index.html" class="flex h-[90px] items-center justify-center border-b border-[#e7e5e2] text-inherit no-underline" aria-label="Apparel One home">
+        <div class="text-center leading-none select-none"><div class="relative inline-block text-[38px] font-black tracking-[-5px]">AOI<span class="absolute left-[1px] bottom-0 text-[15px] text-[#f04b45]">▲</span></div><div class="mt-[-1px] text-[10px] font-extrabold">APPAREL ONE</div><div class="mt-1 text-[7px] tracking-[2px] text-[#777]">INDONESIA</div></div>
+      </a>
+      <div class="px-5 pb-2 pt-7 text-[9px] font-bold uppercase tracking-[1.5px] text-[#999]">Sub-admin</div>
+      <nav class="space-y-1 px-3" aria-label="Dashboard sections">
+        <button class="nav-link active flex h-10 w-full items-center gap-3 rounded px-3 text-left text-[12px] font-bold" data-view="workbook"><i data-lucide="table-properties" class="h-4 w-4"></i>Workbook rows</button>
+        <button class="nav-link flex h-10 w-full items-center gap-3 rounded px-3 text-left text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-view="activity"><i data-lucide="users-round" class="h-4 w-4"></i>Employee activity</button>
+        <button class="nav-link flex h-10 w-full items-center gap-3 rounded px-3 text-left text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-view="employees"><i data-lucide="shield-check" class="h-4 w-4"></i>Employee access</button>
+      </nav>
+      <div class="mt-auto border-t border-[#e7e5e2] p-4">
+        <div class="mb-4 flex items-center gap-3"><div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5e7e5] text-[11px] font-extrabold text-[#963e3d]">SA</div><div><div class="text-[11px] font-extrabold">Sub-admin</div><div class="mt-0.5 text-[9px] text-[#777]">Data manager</div></div></div>
+        <a href="admin-dashboard.html" class="flex h-9 items-center gap-3 rounded px-3 text-[11px] font-bold text-[#555] hover:bg-[#f7f7f5]"><i data-lucide="layout-dashboard" class="h-4 w-4"></i>Admin dashboard</a>
+        <button id="logoutBtn" class="mt-1 flex h-9 w-full items-center gap-3 rounded px-3 text-[11px] font-bold text-[#a94a4a] hover:bg-[#fff4f2]"><i data-lucide="log-out" class="h-4 w-4"></i>Log out</button>
+      </div>
+    </aside>
+
+    <main class="flex min-w-0 flex-1 flex-col">
+      <header class="flex h-[72px] shrink-0 items-center gap-3 border-b border-[#e7e5e2] bg-white px-4 sm:px-7">
+        <button id="mobileMenuBtn" class="hidden h-9 w-9 shrink-0 items-center justify-center rounded border border-[#e7e5e2]" aria-label="Open menu"><i data-lucide="menu" class="h-4 w-4"></i></button>
+        <div><div class="text-[10px] font-bold uppercase tracking-[1px] text-[#a75452]">Operations</div><div class="text-[12px] font-extrabold">Sub-admin workspace</div></div>
+        <div class="ml-auto flex items-center gap-2 text-[10px] font-semibold text-[#777]"><span class="hidden sm:inline">Changes save in this browser</span><i data-lucide="cloud-check" class="h-4 w-4 text-[#55805d]"></i></div>
+      </header>
+
+      <section class="scrollbar flex-1 overflow-auto">
+        <div class="mx-auto w-full max-w-[1440px] p-4 sm:p-7">
+          <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">Data administration</p><h1 id="viewTitle" class="text-[22px] font-extrabold">Imported workbook</h1><p id="viewSubtitle" class="mt-1 text-[11px] text-[#777]">Edit imported rows and column headers shared with the dashboards.</p></div>
+            <div class="flex flex-wrap gap-2" id="workbookActions"><a href="export.html" class="flex h-9 items-center gap-2 rounded border border-[#d9d7d3] bg-white px-3 text-[10px] font-bold hover:bg-[#faf9f7]"><i data-lucide="upload" class="h-4 w-4"></i>Import workbook</a><button id="exportCsvBtn" class="flex h-9 items-center gap-2 rounded border border-[#d9d7d3] bg-white px-3 text-[10px] font-bold hover:bg-[#faf9f7]"><i data-lucide="download" class="h-4 w-4"></i>Download CSV</button></div>
+          </div>
+
+          <div id="dashboardStats" class="stats-grid mb-5 grid grid-cols-3 gap-3">
+            <article class="rounded border border-[#e4e1dc] bg-white p-4"><div class="text-[10px] font-bold text-[#666]">Imported rows</div><div id="rowTotal" class="mt-2 text-[24px] font-extrabold">0</div></article>
+            <article class="rounded border border-[#e4e1dc] bg-white p-4"><div class="text-[10px] font-bold text-[#666]">Column headers</div><div id="columnTotal" class="mt-2 text-[24px] font-extrabold">0</div></article>
+            <article class="rounded border border-[#e4e1dc] bg-white p-4"><div class="text-[10px] font-bold text-[#666]">Activity entries</div><div id="activityTotal" class="mt-2 text-[24px] font-extrabold">0</div></article>
+          </div>
+
+          <section id="workbookView" class="rounded border border-[#e4e1dc] bg-white">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#eceae6] px-4 py-4 sm:px-5">
+              <div><h2 class="text-[12px] font-extrabold">Imported rows</h2><p id="workbookStatus" class="mt-1 text-[9px] text-[#888]">No workbook is loaded yet.</p></div>
+              <div class="flex flex-wrap gap-2"><button id="manageHeadersBtn" class="flex h-8 items-center gap-2 rounded border border-[#d9d7d3] px-3 text-[10px] font-bold hover:bg-[#faf9f7]"><i data-lucide="columns-3" class="h-3.5 w-3.5"></i>Manage headers</button><button id="addRowBtn" class="flex h-8 items-center gap-2 rounded bg-[#b84e51] px-3 text-[10px] font-bold text-white hover:bg-[#a64347]"><i data-lucide="plus" class="h-3.5 w-3.5"></i>Add row</button></div>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#eceae6] px-4 py-3 sm:px-5">
+              <div class="relative w-full max-w-[320px]"><i data-lucide="search" class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#888]"></i><input id="rowSearch" type="search" placeholder="Search imported rows..." class="h-8 w-full rounded border border-[#deddda] pl-9 pr-3 text-[10px] outline-none focus:border-[#c95a5f]" /></div>
+              <span id="rowRange" class="text-[9px] text-[#888]" aria-live="polite"></span>
+            </div>
+            <div class="scrollbar overflow-x-auto"><table class="w-full border-collapse text-left text-[10px]"><thead id="rowHead"></thead><tbody id="rowBody"></tbody></table></div>
+            <div class="flex items-center justify-between gap-3 border-t border-[#eceae6] px-4 py-3 sm:px-5"><span id="pageIndicator" class="text-[9px] font-bold text-[#777]"></span><div class="flex gap-2"><button id="prevRows" class="rounded border border-[#deddda] px-3 py-1.5 text-[9px] font-bold disabled:opacity-40" disabled>Previous</button><button id="nextRows" class="rounded border border-[#deddda] px-3 py-1.5 text-[9px] font-bold disabled:opacity-40" disabled>Next</button></div></div>
+          </section>
+
+          <section id="activityView" class="hidden rounded border border-[#e4e1dc] bg-white">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#eceae6] px-4 py-4 sm:px-5"><div><h2 class="text-[12px] font-extrabold">Employee activity</h2><p class="mt-1 text-[9px] text-[#888]">Review, edit, or remove activity entries.</p></div><button id="addActivityBtn" class="flex h-8 items-center gap-2 rounded bg-[#b84e51] px-3 text-[10px] font-bold text-white hover:bg-[#a64347]"><i data-lucide="plus" class="h-3.5 w-3.5"></i>Add activity</button></div>
+            <div class="scrollbar overflow-x-auto"><table class="w-full min-w-[620px] border-collapse text-left text-[10px]"><thead><tr class="bg-[#faf9f7] text-[9px] uppercase tracking-[.7px] text-[#777]"><th class="px-4 py-3 font-bold">Employee</th><th class="px-3 py-3 font-bold">Activity</th><th class="px-3 py-3 font-bold">Recorded</th><th class="px-4 py-3 font-bold">Actions</th></tr></thead><tbody id="activityBody"></tbody></table></div>
+            <div id="activityEmpty" class="hidden px-5 py-10 text-center text-[11px] text-[#888]">No employee activity entries yet. Activity is logged when workbook rows are changed.</div>
+          </section>
+          <section id="employeeAccessView" class="hidden rounded border border-[#e4e1dc] bg-white">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#eceae6] px-4 py-4 sm:px-5"><div><h2 class="text-[12px] font-extrabold">Employee access</h2><p class="mt-1 text-[9px] text-[#888]">Choose whether each employee can edit imported row details or view them only.</p></div><span id="employeeAccessSaved" class="text-[9px] text-[#55805d]" aria-live="polite"></span></div>
+            <div class="scrollbar overflow-x-auto"><table class="w-full min-w-[620px] border-collapse text-left text-[10px]"><thead><tr class="bg-[#faf9f7] text-[9px] uppercase tracking-[.7px] text-[#777]"><th class="px-4 py-3 font-bold">Employee</th><th class="px-3 py-3 font-bold">Account</th><th class="px-4 py-3 font-bold">Imported row access</th></tr></thead><tbody id="employeeAccessBody"></tbody></table></div>
+          </section>
+          <div id="toast" class="fixed bottom-4 right-4 z-50 hidden max-w-[calc(100vw-32px)] rounded bg-[#20201f] px-4 py-3 text-[11px] font-semibold text-white shadow-lg" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="rowDialog"><form id="rowForm" class="p-5"><div class="mb-4 flex items-start justify-between"><div><h2 id="rowDialogTitle" class="text-[15px] font-extrabold">Add row</h2><p class="mt-1 text-[10px] text-[#777]">Update values in the imported worksheet.</p></div><button type="button" class="closeDialog rounded p-1 text-[#777]" aria-label="Close"><i data-lucide="x" class="h-4 w-4"></i></button></div><div id="rowFields" class="grid max-h-[55vh] gap-3 overflow-y-auto"></div><div class="mt-5 flex justify-end gap-2 border-t border-[#eceae6] pt-4"><button type="button" class="closeDialog rounded border border-[#deddda] px-3 py-2 text-[10px] font-bold">Cancel</button><button class="rounded bg-[#b84e51] px-4 py-2 text-[10px] font-bold text-white" type="submit">Save row</button></div></form></dialog>
+
+  <dialog id="headersDialog"><form id="headersForm" class="p-5"><div class="mb-4 flex items-start justify-between"><div><h2 class="text-[15px] font-extrabold">Manage column headers</h2><p class="mt-1 text-[10px] text-[#777]">Rename, add, or remove worksheet columns.</p></div><button type="button" class="closeDialog rounded p-1 text-[#777]" aria-label="Close"><i data-lucide="x" class="h-4 w-4"></i></button></div><div id="headerFields" class="grid max-h-[55vh] gap-2 overflow-y-auto"></div><p id="headerError" class="mt-2 hidden text-[10px] text-red-600"></p><div class="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-[#eceae6] pt-4"><button id="addHeaderBtn" type="button" class="rounded border border-[#deddda] px-3 py-2 text-[10px] font-bold">Add column</button><div class="flex gap-2"><button type="button" class="closeDialog rounded border border-[#deddda] px-3 py-2 text-[10px] font-bold">Cancel</button><button class="rounded bg-[#b84e51] px-4 py-2 text-[10px] font-bold text-white" type="submit">Save headers</button></div></div></form></dialog>
+
+  <dialog id="activityDialog"><form id="activityForm" class="p-5"><div class="mb-4 flex items-start justify-between"><div><h2 id="activityDialogTitle" class="text-[15px] font-extrabold">Add activity</h2><p class="mt-1 text-[10px] text-[#777]">Record or update an employee activity.</p></div><button type="button" class="closeDialog rounded p-1 text-[#777]" aria-label="Close"><i data-lucide="x" class="h-4 w-4"></i></button></div><div class="grid gap-3"><label class="grid gap-1 text-[10px] font-bold">Employee<input id="activityEmployee" required class="h-9 rounded border border-[#deddda] px-3 text-[11px] font-normal outline-none focus:border-[#c95a5f]" /></label><label class="grid gap-1 text-[10px] font-bold">Activity details<textarea id="activityDescription" required rows="3" class="rounded border border-[#deddda] p-3 text-[11px] font-normal outline-none focus:border-[#c95a5f]"></textarea></label></div><div class="mt-5 flex justify-end gap-2 border-t border-[#eceae6] pt-4"><button type="button" class="closeDialog rounded border border-[#deddda] px-3 py-2 text-[10px] font-bold">Cancel</button><button class="rounded bg-[#b84e51] px-4 py-2 text-[10px] font-bold text-white" type="submit">Save activity</button></div></form></dialog>
+
+  <dialog id="rowDetailsDialog" class="max-h-[88vh] w-[min(720px,calc(100vw-28px))] rounded-md shadow-xl backdrop:bg-black/40">
+    <div class="flex items-start justify-between border-b border-[#eceae6] p-5"><div><p class="text-[9px] font-bold uppercase tracking-[1px] text-[#b65a58]">Imported catalog row</p><h2 id="rowDetailsTitle" class="mt-1 text-[15px] font-extrabold">Row details</h2><p id="rowDetailsSubtitle" class="mt-1 text-[10px] text-[#888]"></p></div><button id="closeRowDetails" class="rounded p-1 text-[#777] hover:bg-[#f5f4f1]" type="button" aria-label="Close row details"><i data-lucide="x" class="h-4 w-4"></i></button></div>
+    <div class="scrollbar max-h-[65vh] overflow-y-auto p-5"><div><div class="flex items-center justify-between gap-3"><h3 class="text-[10px] font-extrabold uppercase tracking-[.8px]">Employee catalog visits</h3><span id="rowVisitCount" class="text-[9px] text-[#888]"></span></div><div id="rowVisitors" class="mt-2 space-y-2"></div></div><div class="mt-5 border-t border-[#eceae6] pt-4"><div class="flex items-center justify-between gap-3"><h3 class="text-[10px] font-extrabold uppercase tracking-[.8px]">Employee changes</h3><span id="rowChangeCount" class="text-[9px] text-[#888]"></span></div><div id="rowChanges" class="mt-2 space-y-2"></div></div><div class="mt-5 border-t border-[#eceae6] pt-4"><h3 class="mb-2 text-[10px] font-extrabold uppercase tracking-[.8px]">Imported column values</h3><div id="rowDetailsFields" class="divide-y divide-[#f0efec]"></div></div></div>
+    <div class="border-t border-[#eceae6] px-5 py-3 text-right"><button id="closeRowDetailsFooter" class="rounded border border-[#deddda] px-3 py-2 text-[10px] font-bold" type="button">Close</button></div>
+  </dialog>
+
+  <script>
+    const ROW_KEY = 'aoi_imported_designs';
+    const HEADER_KEY = 'aoi_imported_headers';
+    const ROW_IDS_KEY = 'aoi_imported_row_ids';
+    const WORKBOOK_KEY = 'aoi_imported_workbook';
+    const ACTIVE_SHEET_KEY = 'aoi_active_sheet_name';
+    const ACTIVITY_KEY = 'aoi_employee_activity';
+    const PERMISSIONS_KEY = 'aoi_employee_permissions';
+    const PAGE_SIZE = 10;
+    const employeeAccounts = [{ name: 'Raque Canete', email: 'employee@aoi.com' }];
+    let rows = [];
+    let headers = [];
+    let rowIds = [];
+    let activities = [];
+    let employeePermissions = {};
+    let currentPage = 1;
+    let editingRowIndex = null;
+    let editingActivityId = null;
+    let headerDraft = [];
+    let toastTimer;
+
+    try {
+      const storedRows = JSON.parse(localStorage.getItem(ROW_KEY) || '[]');
+      rows = Array.isArray(storedRows) ? storedRows : [];
+      const storedHeaders = JSON.parse(localStorage.getItem(HEADER_KEY) || 'null');
+      headers = Array.isArray(storedHeaders) ? storedHeaders.map(String) : Object.keys(rows[0] || {});
+      const storedRowIds = JSON.parse(localStorage.getItem(ROW_IDS_KEY) || 'null');
+      rowIds = Array.isArray(storedRowIds) && storedRowIds.length === rows.length ? storedRowIds : rows.map((_, index) => `aoi-row-${index}`);
+      const storedActivities = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]');
+      activities = Array.isArray(storedActivities) ? storedActivities : [];
+      try {
+        const storedPermissions = JSON.parse(localStorage.getItem(PERMISSIONS_KEY) || '{}');
+        employeePermissions = storedPermissions && typeof storedPermissions === 'object' && !Array.isArray(storedPermissions) ? storedPermissions : {};
+      } catch (error) {
+        employeePermissions = {};
+      }
+    } catch (error) {
+      console.error('Could not read dashboard data.', error);
+      rows = [];
+      headers = [];
+      rowIds = [];
+      activities = [];
+    }
+
+    const rowBody = document.getElementById('rowBody');
+    const rowHead = document.getElementById('rowHead');
+    const rowSearch = document.getElementById('rowSearch');
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    }
+
+    function persistRows() {
+      localStorage.setItem(ROW_KEY, JSON.stringify(rows));
+      localStorage.setItem(HEADER_KEY, JSON.stringify(headers));
+      localStorage.setItem(ROW_IDS_KEY, JSON.stringify(rowIds));
+      const workbook = JSON.parse(localStorage.getItem(WORKBOOK_KEY) || '[]');
+      const activeSheet = localStorage.getItem(ACTIVE_SHEET_KEY);
+      const sheet = workbook.find(item => item.name === activeSheet);
+      if (sheet) {
+        sheet.rows = rows;
+        sheet.headers = headers;
+        sheet.rowIds = rowIds;
+        localStorage.setItem(WORKBOOK_KEY, JSON.stringify(workbook));
+      }
+      renderAll();
+    }
+
+    function createRowId() {
+      return `aoi-row-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function persistActivities() {
+      localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activities));
+      document.getElementById('activityTotal').textContent = activities.length;
+      renderActivities();
+    }
+
+    function notify(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add('hidden'), 2400);
+    }
+
+    function logActivity(employee, description, rowDetails = {}) {
+      activities.unshift({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, employee, description, recorded: new Date().toLocaleString(), ...rowDetails });
+      persistActivities();
+    }
+
+    function getRowIdentity(row, index) {
+      const normalizedHeaders = headers.map(header => header.toLowerCase().replace(/[^a-z0-9]/g, ''));
+      const nameIndex = normalizedHeaders.findIndex(header => /^(stylename|style|designname|name|catalogname)$/.test(header));
+      const brandIndex = normalizedHeaders.findIndex(header => header.includes('brand'));
+      const nameHeader = headers[nameIndex >= 0 ? nameIndex : 0];
+      return {
+        rowId: rowIds[index],
+        rowName: String(row[nameHeader] ?? `Row ${index + 1}`).trim(),
+        rowBrand: brandIndex >= 0 ? String(row[headers[brandIndex]] ?? '').trim() : ''
+      };
+    }
+
+    function filteredRows() {
+      const query = rowSearch.value.trim().toLowerCase();
+      return rows.map((row, index) => ({ row, index })).filter(({ row }) => headers.some(header => String(row[header] ?? '').toLowerCase().includes(query)));
+    }
+
+    function renderRows() {
+      rowHead.innerHTML = headers.length ? `<tr class="bg-[#faf9f7] text-[9px] uppercase tracking-[.7px] text-[#777]">${headers.map(header => `<th class="whitespace-nowrap px-3 py-3 font-bold">${escapeHtml(header)}</th>`).join('')}<th class="sticky right-0 bg-[#faf9f7] px-4 py-3 text-right font-bold">Actions</th></tr>` : '';
+      const filtered = filteredRows();
+      const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      currentPage = Math.min(currentPage, pageCount);
+      const pageRows = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+      rowBody.innerHTML = pageRows.map(({ row, index }) => `<tr data-row-index="${index}" tabindex="0" aria-label="View details for ${escapeHtml(getRowIdentity(row, index).rowName)}" class="cursor-pointer border-t border-[#f0efec] hover:bg-[#fcfbf9]">${headers.map(header => `<td class="max-w-[280px] px-3 py-3 text-[#555]">${escapeHtml(row[header] ?? '')}</td>`).join('')}<td class="sticky right-0 whitespace-nowrap bg-white px-3 py-2 text-right"><button data-edit-row="${index}" class="rounded px-2 py-1.5 text-[9px] font-bold text-[#9e4145] hover:bg-[#fff4f2]">Edit</button><button data-delete-row="${index}" class="rounded px-2 py-1.5 text-[9px] font-bold text-[#777] hover:bg-gray-100">Delete</button></td></tr>`).join('');
+      document.getElementById('rowRange').textContent = `${filtered.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0}-${Math.min(currentPage * PAGE_SIZE, filtered.length)} of ${filtered.length} rows`;
+      document.getElementById('pageIndicator').textContent = `${currentPage} / ${pageCount}`;
+      document.getElementById('prevRows').disabled = currentPage <= 1;
+      document.getElementById('nextRows').disabled = currentPage >= pageCount;
+      document.getElementById('workbookStatus').textContent = rows.length ? `${rows.length} imported row(s) · ${headers.length} column(s)` : 'No workbook rows are loaded. Import a workbook or add headers and rows.';
+    }
+
+    function renderActivities() {
+      document.getElementById('activityEmpty').classList.toggle('hidden', activities.length > 0);
+      document.getElementById('activityBody').innerHTML = activities.map(activity => `<tr class="border-t border-[#f0efec]"><td class="px-4 py-3 font-bold">${escapeHtml(activity.employee)}</td><td class="max-w-[520px] px-3 py-3 text-[#555]">${escapeHtml(activity.description)}</td><td class="whitespace-nowrap px-3 py-3 text-[#888]">${escapeHtml(activity.recorded)}</td><td class="whitespace-nowrap px-4 py-3"><button data-edit-activity="${escapeHtml(activity.id)}" class="rounded px-2 py-1.5 text-[9px] font-bold text-[#9e4145] hover:bg-[#fff4f2]">Edit</button><button data-delete-activity="${escapeHtml(activity.id)}" class="rounded px-2 py-1.5 text-[9px] font-bold text-[#777] hover:bg-gray-100">Delete</button></td></tr>`).join('');
+    }
+
+    function renderEmployeeAccess() {
+      document.getElementById('employeeAccessBody').innerHTML = employeeAccounts.map(employee => `<tr class="border-t border-[#f0efec]"><td class="px-4 py-3 font-bold">${escapeHtml(employee.name)}</td><td class="px-3 py-3 text-[#777]">${escapeHtml(employee.email)}</td><td class="px-4 py-2"><label class="sr-only" for="permission-${escapeHtml(employee.email)}">Row access for ${escapeHtml(employee.name)}</label><select id="permission-${escapeHtml(employee.email)}" data-employee-permission="${escapeHtml(employee.email)}" class="h-8 rounded border border-[#deddda] bg-white px-2 text-[10px] font-semibold outline-none focus:border-[#c95a5f]"><option value="edit" ${employeePermissions[employee.email] !== 'view' ? 'selected' : ''}>Can edit row details</option><option value="view" ${employeePermissions[employee.email] === 'view' ? 'selected' : ''}>View only</option></select></td></tr>`).join('');
+    }
+
+    function renderAll() {
+      document.getElementById('rowTotal').textContent = rows.length;
+      document.getElementById('columnTotal').textContent = headers.length;
+      renderRows();
+      renderActivities();
+      renderEmployeeAccess();
+    }
+
+    function openRowEditor(index = null) {
+      if (!headers.length) {
+        notify('Add at least one column header first.');
+        openHeadersDialog();
+        return;
+      }
+      editingRowIndex = index;
+      const existing = index === null ? {} : rows[index];
+      document.getElementById('rowDialogTitle').textContent = index === null ? 'Add row' : 'Edit row';
+      document.getElementById('rowFields').innerHTML = headers.map((header, fieldIndex) => `<label class="grid gap-1 text-[10px] font-bold">${escapeHtml(header)}<input name="field-${fieldIndex}" value="${escapeHtml(existing[header] ?? '')}" class="h-9 rounded border border-[#deddda] px-3 text-[11px] font-normal outline-none focus:border-[#c95a5f]" /></label>`).join('');
+      document.getElementById('rowDialog').showModal();
+    }
+
+    function openImportedRowDetails(index) {
+      const row = rows[index];
+      if (!row) return;
+      const identity = getRowIdentity(row, index);
+      const normalize = value => String(value || '').trim().toLowerCase();
+      const matchesRow = activity => activity.rowId ? activity.rowId === identity.rowId : normalize(activity.rowName) === normalize(identity.rowName) && (!identity.rowBrand || normalize(activity.rowBrand) === normalize(identity.rowBrand));
+      const visits = activities.filter(activity => !Array.isArray(activity.changes) && matchesRow(activity));
+      const changes = activities.filter(activity => Array.isArray(activity.changes) && activity.changes.length && matchesRow(activity));
+
+      document.getElementById('rowDetailsTitle').textContent = identity.rowName || `Row ${index + 1}`;
+      document.getElementById('rowDetailsSubtitle').textContent = identity.rowBrand ? `${identity.rowBrand} · Imported row ${index + 1}` : `Imported row ${index + 1}`;
+      document.getElementById('rowDetailsFields').innerHTML = headers.map(header => {
+        const value = row[header];
+        return `<div class="grid gap-1 py-3 sm:grid-cols-[180px_1fr] sm:gap-4"><div class="text-[9px] font-bold uppercase tracking-[.7px] text-[#888]">${escapeHtml(header)}</div><div class="break-words text-[11px] text-[#333]">${escapeHtml(typeof value === 'object' && value !== null ? JSON.stringify(value) : value ?? '—')}</div></div>`;
+      }).join('');
+      document.getElementById('rowVisitCount').textContent = `${visits.length} visit${visits.length === 1 ? '' : 's'}`;
+      document.getElementById('rowVisitors').innerHTML = visits.length ? visits.map(visit => `<div class="flex flex-wrap items-center justify-between gap-2 rounded border border-[#eceae6] bg-[#faf9f7] px-3 py-2"><span class="text-[10px] font-bold">${escapeHtml(visit.employee || 'Employee')}</span><span class="text-[9px] text-[#888]">${escapeHtml(visit.recorded || 'Time not recorded')}</span></div>`).join('') : '<p class="rounded border border-dashed border-[#deddda] px-3 py-3 text-[10px] text-[#888]">No employee has opened this catalog row yet.</p>';
+      document.getElementById('rowChangeCount').textContent = `${changes.length} edit${changes.length === 1 ? '' : 's'}`;
+      document.getElementById('rowChanges').innerHTML = changes.length ? changes.map(change => `<div class="rounded border border-[#eceae6] bg-[#faf9f7] px-3 py-2"><div class="flex flex-wrap items-center justify-between gap-2"><span class="text-[10px] font-bold">${escapeHtml(change.employee || 'Employee')}</span><span class="text-[9px] text-[#888]">${escapeHtml(change.recorded || 'Time not recorded')}</span></div><div class="mt-2 space-y-1">${change.changes.map(item => `<p class="text-[9px] text-[#555]"><b>${escapeHtml(item.header)}:</b> ${escapeHtml(item.before || '—')} <span class="px-1 text-[#999]">→</span> ${escapeHtml(item.after || '—')}</p>`).join('')}</div></div>`).join('') : '<p class="rounded border border-dashed border-[#deddda] px-3 py-3 text-[10px] text-[#888]">No employee edits recorded for this row.</p>';
+      document.getElementById('rowDetailsDialog').showModal();
+      lucide.createIcons();
+    }
+
+    function openHeadersDialog() {
+      document.getElementById('headerError').classList.add('hidden');
+      headerDraft = headers.map(header => ({ original: header, value: header }));
+      renderHeaderFields();
+      document.getElementById('headersDialog').showModal();
+    }
+
+    function captureHeaderInputs() {
+      document.querySelectorAll('[data-header-index]').forEach(input => {
+        const item = headerDraft[Number(input.dataset.headerIndex)];
+        if (item) item.value = input.value;
+      });
+    }
+
+    function renderHeaderFields() {
+      document.getElementById('headerFields').innerHTML = headerDraft.map((item, index) => `<div class="flex items-center gap-2"><label class="sr-only" for="header-${index}">Column ${index + 1} name</label><input id="header-${index}" data-header-index="${index}" value="${escapeHtml(item.value)}" class="h-9 min-w-0 flex-1 rounded border border-[#deddda] px-3 text-[11px] outline-none focus:border-[#c95a5f]" /><button type="button" data-remove-header="${index}" class="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-[#deddda] text-[#777] hover:bg-[#fff4f2] hover:text-[#a94a4a]" aria-label="Remove ${escapeHtml(item.value)}"><i data-lucide="trash-2" class="h-4 w-4"></i></button></div>`).join('');
+      lucide.createIcons();
+    }
+
+    function openActivityEditor(id = null) {
+      const activity = activities.find(entry => entry.id === id);
+      editingActivityId = id;
+      document.getElementById('activityDialogTitle').textContent = activity ? 'Edit activity' : 'Add activity';
+      document.getElementById('activityEmployee').value = activity?.employee || '';
+      document.getElementById('activityDescription').value = activity?.description || '';
+      document.getElementById('activityDialog').showModal();
+    }
+
+    document.getElementById('rowForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const updated = Object.fromEntries(headers.map((header, index) => [header, String(formData.get(`field-${index}`) || '').trim()]));
+      const isNew = editingRowIndex === null;
+      if (isNew) {
+        rows.unshift(updated);
+        rowIds.unshift(createRowId());
+      }
+      else rows[editingRowIndex] = updated;
+      const rowIndex = isNew ? 0 : editingRowIndex;
+      const identity = getRowIdentity(updated, rowIndex);
+      persistRows();
+      logActivity('Sub-admin', `${isNew ? 'Added' : 'Edited'} a workbook row${updated[headers[0]] ? `: ${updated[headers[0]]}` : ''}.`, identity);
+      event.currentTarget.reset();
+      document.getElementById('rowDialog').close();
+      notify(isNew ? 'Row added.' : 'Row updated.');
+    });
+
+    document.getElementById('headersForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const inputs = [...document.querySelectorAll('[data-header-index]')];
+      inputs.forEach(input => { headerDraft[Number(input.dataset.headerIndex)].value = input.value.trim(); });
+      const nextHeaders = headerDraft.map(item => item.value);
+      const normalized = nextHeaders.map(header => header.toLowerCase());
+      const error = document.getElementById('headerError');
+      if (nextHeaders.some(header => !header) || new Set(normalized).size !== normalized.length) {
+        error.textContent = 'Headers must be non-empty and unique.';
+        error.classList.remove('hidden');
+        return;
+      }
+      rows = rows.map(row => Object.fromEntries(headerDraft.map(item => [item.value, item.original === null ? '' : row[item.original] ?? ''])));
+      headers = nextHeaders;
+      persistRows();
+      logActivity('Sub-admin', 'Updated workbook column headers.');
+      document.getElementById('headersDialog').close();
+      notify('Headers updated.');
+    });
+
+    document.getElementById('addHeaderBtn').addEventListener('click', () => {
+      captureHeaderInputs();
+      let number = headers.length + 1;
+      let candidate = `Column ${number}`;
+      while (headerDraft.some(item => item.value.toLowerCase() === candidate.toLowerCase())) candidate = `Column ${++number}`;
+      headerDraft.push({ original: null, value: candidate });
+      renderHeaderFields();
+    });
+
+    document.getElementById('headerFields').addEventListener('click', event => {
+      const button = event.target.closest('[data-remove-header]');
+      if (!button) return;
+      captureHeaderInputs();
+      headerDraft.splice(Number(button.dataset.removeHeader), 1);
+      renderHeaderFields();
+    });
+
+    rowBody.addEventListener('click', event => {
+      const editButton = event.target.closest('[data-edit-row]');
+      const deleteButton = event.target.closest('[data-delete-row]');
+      if (editButton) {
+        openRowEditor(Number(editButton.dataset.editRow));
+        return;
+      }
+      if (deleteButton) {
+        const index = Number(deleteButton.dataset.deleteRow);
+        const label = rows[index]?.[headers[0]] || `row ${index + 1}`;
+        if (!window.confirm(`Delete ${label}?`)) return;
+        const identity = getRowIdentity(rows[index], index);
+        rows.splice(index, 1);
+        rowIds.splice(index, 1);
+        persistRows();
+        logActivity('Sub-admin', `Deleted workbook row: ${label}.`, identity);
+        notify('Row deleted.');
+        return;
+      }
+      const row = event.target.closest('[data-row-index]');
+      if (row) openImportedRowDetails(Number(row.dataset.rowIndex));
+    });
+
+    rowBody.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      if (event.target.matches('button')) return;
+      const row = event.target.closest('[data-row-index]');
+      if (row) {
+        event.preventDefault();
+        openImportedRowDetails(Number(row.dataset.rowIndex));
+      }
+    });
+
+    document.getElementById('activityForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const employee = document.getElementById('activityEmployee').value.trim();
+      const description = document.getElementById('activityDescription').value.trim();
+      if (editingActivityId) {
+        activities = activities.map(activity => activity.id === editingActivityId ? { ...activity, employee, description } : activity);
+      } else {
+        activities.unshift({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, employee, description, recorded: new Date().toLocaleString() });
+      }
+      persistActivities();
+      document.getElementById('activityDialog').close();
+      notify(editingActivityId ? 'Activity updated.' : 'Activity added.');
+    });
+
+    document.getElementById('activityBody').addEventListener('click', event => {
+      const editButton = event.target.closest('[data-edit-activity]');
+      const deleteButton = event.target.closest('[data-delete-activity]');
+      if (editButton) openActivityEditor(editButton.dataset.editActivity);
+      if (deleteButton) {
+        activities = activities.filter(activity => activity.id !== deleteButton.dataset.deleteActivity);
+        persistActivities();
+        notify('Activity removed.');
+      }
+    });
+
+    document.getElementById('employeeAccessBody').addEventListener('change', event => {
+      const select = event.target.closest('[data-employee-permission]');
+      if (!select) return;
+      employeePermissions[select.dataset.employeePermission] = select.value;
+      localStorage.setItem(PERMISSIONS_KEY, JSON.stringify(employeePermissions));
+      document.getElementById('employeeAccessSaved').textContent = `Saved for ${select.dataset.employeePermission}`;
+      notify(select.value === 'edit' ? 'Employee can edit imported rows.' : 'Employee is view-only.');
+    });
+
+    document.getElementById('addRowBtn').addEventListener('click', () => openRowEditor());
+    document.getElementById('manageHeadersBtn').addEventListener('click', openHeadersDialog);
+    document.getElementById('addActivityBtn').addEventListener('click', () => openActivityEditor());
+    document.getElementById('prevRows').addEventListener('click', () => { if (currentPage > 1) { currentPage -= 1; renderRows(); } });
+    document.getElementById('nextRows').addEventListener('click', () => { if (currentPage < Math.ceil(filteredRows().length / PAGE_SIZE)) { currentPage += 1; renderRows(); } });
+    rowSearch.addEventListener('input', () => { currentPage = 1; renderRows(); });
+    document.querySelectorAll('.closeDialog').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
+    document.getElementById('closeRowDetails').addEventListener('click', () => document.getElementById('rowDetailsDialog').close());
+    document.getElementById('closeRowDetailsFooter').addEventListener('click', () => document.getElementById('rowDetailsDialog').close());
+
+    document.querySelectorAll('.nav-link').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('.nav-link').forEach(item => item.classList.remove('active'));
+      button.classList.add('active');
+      const view = button.dataset.view;
+      const showWorkbook = view === 'workbook';
+      const showActivity = view === 'activity';
+      const showEmployees = view === 'employees';
+      document.getElementById('workbookView').classList.toggle('hidden', !showWorkbook);
+      document.getElementById('activityView').classList.toggle('hidden', !showActivity);
+      document.getElementById('employeeAccessView').classList.toggle('hidden', !showEmployees);
+      document.getElementById('workbookActions').classList.toggle('hidden', !showWorkbook);
+      document.getElementById('dashboardStats').classList.toggle('hidden', !showWorkbook);
+      document.getElementById('viewTitle').textContent = showActivity ? 'Employee activity' : showEmployees ? 'Employee access' : 'Imported workbook';
+      document.getElementById('viewSubtitle').textContent = showActivity ? 'Manage activity records and review changes made to workbook rows.' : showEmployees ? 'Set which employee accounts can edit imported row details.' : 'Edit imported rows and column headers shared with the dashboards.';
+      document.body.classList.remove('menu-open');
+    }));
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => document.body.classList.toggle('menu-open'));
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('aoiLoggedIn');
+      sessionStorage.removeItem('aoiRole');
+      sessionStorage.removeItem('aoiEmail');
+      window.location.href = 'index.html';
+    });
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+      const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+      const csv = [headers.map(csvCell).join(','), ...rows.map(row => headers.map(header => csvCell(row[header])).join(','))].join('\n');
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      link.download = 'managed-workbook.csv';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+    renderAll();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
