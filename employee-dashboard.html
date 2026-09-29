@@ -15,6 +15,7 @@
 		body { margin: 0; font-family: 'Montserrat', sans-serif; background: #f6f6f4; color: #20201f; }
 		.nav-link { transition: background-color .18s ease, color .18s ease; }
 		.nav-link.active { background: #fce5e5; color: #b83d43; }
+		.overview-grid > * { min-width: 0; }
 		.fade-up { animation: fadeUp .45s ease both; }
 		@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 		.delay-1 { animation-delay: .06s; }
@@ -24,12 +25,14 @@
 		.scrollbar::-webkit-scrollbar-thumb { background: #d0d0ce; border-radius: 8px; }
 		@media (max-width: 767px) {
 			body { overflow: hidden; }
-			aside { position: fixed !important; inset: 0 auto 0 0; width: 250px !important; height: 100vh; z-index: 60; transform: translateX(-105%); transition: transform .25s ease; box-shadow: 8px 0 25px rgba(0,0,0,.12); }
-			body.menu-open aside { transform: translateX(0); }
+			body > .flex.h-screen { height: 100dvh; min-height: 100vh; }
+			body > .flex.h-screen > aside { position: fixed !important; inset: 0 auto 0 0; width: 250px !important; height: 100vh; z-index: 60; transform: translateX(-105%); transition: transform .25s ease; box-shadow: 8px 0 25px rgba(0,0,0,.12); }
+			body.menu-open > .flex.h-screen > aside { transform: translateX(0); }
 			body.menu-open::after { content: ''; position: fixed; inset: 0; background: rgba(0,0,0,.38); z-index: 50; }
 			#mobileMenuBtn { display: flex !important; }
 			main { width: 100% !important; min-width: 0 !important; }
-			.stats-grid { grid-template-columns: minmax(0, 1fr) !important; }
+			.overview-grid { grid-template-columns: minmax(0, 1fr) !important; }
+			.overview-grid > * { min-width: 0; }
 			.lower-grid { grid-template-columns: minmax(0, 1fr) !important; }
 			table { min-width: 740px; }
 		}
@@ -51,7 +54,8 @@
 			<nav class="px-3 space-y-1" aria-label="Main navigation">
 				<a href="#overview" class="nav-link active flex h-10 items-center gap-3 rounded px-3 text-[12px] font-bold" data-section="overview"><i data-lucide="layout-dashboard" class="h-4 w-4"></i>Overview</a>
 				<a href="#designs" class="nav-link flex h-10 items-center gap-3 rounded px-3 text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-section="designs"><i data-lucide="layers-2" class="h-4 w-4"></i>CSI Masterlist</a>
-				<a href="#activity" class="nav-link flex h-10 items-center gap-3 rounded px-3 text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-section="activity"><i data-lucide="activity" class="h-4 w-4"></i>Activity</a>
+				<a href="#activity" class="nav-link flex h-10 items-center gap-3 rounded px-3 text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-section="activity"><i data-lucide="activity" class="h-4 w-4"></i>Activity<span id="activityNotificationBadge" class="ml-auto hidden min-w-4 rounded-full bg-[#b84e51] px-1.5 py-0.5 text-center text-[8px] font-extrabold text-white"></span></a>
+				<a href="#shiftReports" class="nav-link flex h-10 items-center gap-3 rounded px-3 text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-section="reports"><i data-lucide="messages-square" class="h-4 w-4"></i>Reports</a>
 			</nav>
 
 			<div class="mt-auto border-t border-[#e7e5e2] p-4">
@@ -72,7 +76,7 @@
 				</div>
 				<div class="ml-auto flex items-center gap-3">
 					<span class="hidden text-[10px] font-semibold text-[#777] sm:block">MONDAY, SEPTEMBER 28</span>
-					<button id="notificationBtn" class="relative flex h-9 w-9 items-center justify-center rounded border border-[#e7e5e2] hover:bg-[#f7f7f5]" aria-label="Notifications"><i data-lucide="bell" class="h-4 w-4"></i><span class="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full bg-[#f04b45]"></span></button>
+					<button id="notificationBtn" class="relative flex h-9 w-9 items-center justify-center rounded border border-[#e7e5e2] hover:bg-[#f7f7f5]" aria-label="Notifications"><i data-lucide="bell" class="h-4 w-4"></i><span id="notificationDot" class="absolute right-[7px] top-[7px] hidden h-1.5 w-1.5 rounded-full bg-[#f04b45]"></span></button>
 				</div>
 			</header>
 
@@ -80,44 +84,124 @@
 				<div class="mx-auto w-full max-w-[1440px] p-4 sm:p-7">
 					<div class="mb-6 flex flex-wrap items-end justify-between gap-3 fade-up">
 						<div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">Your workspace</p><h1 class="text-[22px] font-extrabold tracking-[-.5px]">Good morning, Raque</h1><p class="mt-1 text-[11px] text-[#777]">Here’s the latest from your imported catalog.</p></div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-3 fade-up">
+						<article class="rounded border border-[#e4e1dc] bg-white p-4">
+							<div class="flex items-center gap-2 text-[11px] font-extrabold text-[#222]">
+								<span class="flex h-8 w-8 items-center justify-center rounded border border-[#e7e5e2] bg-[#f9eeee] text-[#b44e50]"><i data-lucide="table-properties" class="h-4 w-4"></i></span>
+								<span>Imported rows</span>
+							</div>
+							<div id="totalDesigns" class="mt-2 text-[18px] font-extrabold">0</div>
+							<div class="text-[9px] text-[#777]">Across all worksheets</div>
+						</article>
+						<article class="rounded border border-[#e4e1dc] bg-white p-4">
+							<div class="flex items-center gap-2 text-[11px] font-extrabold text-[#222]">
+								<span class="flex h-8 w-8 items-center justify-center rounded border border-[#e7e5e2] bg-[#fff4e1] text-[#9c6c1c]"><i data-lucide="clock-3" class="h-4 w-4"></i></span>
+								<span>In review</span>
+							</div>
+							<div id="reviewDesigns" class="mt-2 text-[18px] font-extrabold">0</div>
+							<div class="text-[9px] text-[#777]">Waiting for feedback</div>
+						</article>
+					</div>
+
+					<div class="overview-grid mt-4 grid grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] gap-4 fade-up">
+						<div class="rounded border border-[#e4e1dc] bg-white p-4">
+							<div class="flex items-center justify-between">
+								<h2 class="text-[12px] font-extrabold">Monthly overview</h2>
+								<select class="rounded-full border border-[#e7e5e2] bg-[#faf9f7] px-2 py-1 text-[9px] font-bold text-[#555] outline-none">
+									<option>Sept.</option>
+									<option>Aug.</option>
+									<option>Jul.</option>
+								</select>
+							</div>
+							<div class="mt-2 text-[9px] text-[#777]">Total imported rows across the current catalog month</div>
+							<div id="approvedDesigns" class="mt-2 text-[20px] font-extrabold">0</div>
+							<div class="mt-1 h-[120px]">
+								<svg viewBox="0 0 620 145" preserveAspectRatio="none" class="h-full w-full">
+									<defs>
+										<linearGradient id="empAreaFill" x1="0" x2="0" y1="0" y2="1">
+											<stop offset="0%" stop-color="#ffdfe2" stop-opacity=".95"/>
+											<stop offset="100%" stop-color="#fff" stop-opacity=".15"/>
+										</linearGradient>
+									</defs>
+									<g>
+										<line x1="0" y1="28" x2="620" y2="28" stroke="#f2efec"/>
+										<line x1="0" y1="57" x2="620" y2="57" stroke="#f2efec"/>
+										<line x1="0" y1="86" x2="620" y2="86" stroke="#f2efec"/>
+										<line x1="0" y1="115" x2="620" y2="115" stroke="#f2efec"/>
+									</g>
+									<path d="M0,94 C25,91 25,83 53,84 C78,85 82,92 110,87 C135,82 136,72 163,73 C190,75 192,64 220,68 C248,72 247,79 274,72 C303,64 301,54 329,52 C356,50 365,61 386,57 C413,52 410,37 439,43 C464,48 464,60 493,52 C520,44 518,27 548,33 C573,37 579,47 593,42 C606,37 610,29 620,25 L620,145 L0,145 Z" fill="url(#empAreaFill)"/>
+									<path d="M0,94 C25,91 25,83 53,84 C78,85 82,92 110,87 C135,82 136,72 163,73 C190,75 192,64 220,68 C248,72 247,79 274,72 C303,64 301,54 329,52 C356,50 365,61 386,57 C413,52 410,37 439,43 C464,48 464,60 493,52 C520,44 518,27 548,33 C573,37 579,47 593,42 C606,37 610,29 620,25" fill="none" stroke="#b84e51" stroke-width="2"/>
+									<g fill="#b84e51">
+										<circle cx="0" cy="94" r="3"/><circle cx="53" cy="84" r="3"/><circle cx="110" cy="87" r="3"/><circle cx="163" cy="73" r="3"/><circle cx="220" cy="68" r="3"/><circle cx="274" cy="72" r="3"/><circle cx="329" cy="52" r="3"/><circle cx="386" cy="57" r="3"/><circle cx="439" cy="43" r="3"/><circle cx="493" cy="52" r="3"/><circle cx="548" cy="33" r="3"/><circle cx="593" cy="42" r="3"/><circle cx="620" cy="25" r="3"/>
+									</g>
+								</svg>
+							</div>
+							<div class="mt-[-4px] flex justify-between text-[7px] text-[#999]">
+								<span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+							</div>
+						</div>
+						<div class="space-y-3">
+							<div class="rounded border border-[#e4e1dc] bg-white p-3">
+								<div class="mb-2 flex items-center justify-between"><h2 class="text-[11px] font-extrabold">Recent activities</h2><button class="text-[8px] text-[#777] hover:text-[#333]">View all</button></div>
+								<div id="employeeActivityFeed" class="space-y-3"></div>
+							</div>
+							<div class="rounded border border-[#e4e1dc] bg-white p-3">
+								<div class="flex items-center justify-between"><h2 class="text-[11px] font-extrabold">Status summary</h2><span class="text-[8px] text-[#777]">Live</span></div>
+								<div class="mt-3 grid grid-cols-2 gap-2 text-[9px]">
+									<div class="rounded bg-[#f9eeee] p-2"><div class="text-[#777]">Imported rows</div><div id="totalDesignsSecondary" class="mt-1 text-[16px] font-extrabold text-[#b44e50]">0</div></div>
+									<div class="rounded bg-[#eaf4ed] p-2"><div class="text-[#777]">Approved</div><div id="approvedDesignsSecondary" class="mt-1 text-[16px] font-extrabold text-[#39714a]">0</div></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</section>
+
+			<section id="designs" class="scrollbar hidden flex-1 overflow-auto">
+				<div class="mx-auto w-full max-w-[1440px] p-4 sm:p-7">
+					<div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+						<div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">Imported workbook</p><h1 class="text-[22px] font-extrabold">CSI Masterlist</h1><p id="catalogSource" class="mt-1 text-[10px] text-[#888]">Rows from every imported worksheet</p></div>
 						<button id="exportBtn" class="flex h-9 items-center gap-2 rounded border border-[#d9d7d3] bg-white px-3 text-[10px] font-bold hover:bg-[#faf9f7]"><i data-lucide="download" class="h-4 w-4"></i>Export designs</button>
 					</div>
+					<section class="min-w-0 overflow-hidden rounded border border-[#e4e1dc] bg-white">
+						<div class="scrollbar overflow-x-auto">
+							<table class="w-full border-collapse text-left text-[10px]">
+								<thead id="designTableHead"></thead>
+								<tbody id="designTable"></tbody>
+							</table>
+						</div>
+						<div id="emptyState" class="hidden px-5 py-10 text-center text-[11px] text-[#888]">No designs match your search.</div>
+						<div class="flex flex-wrap items-center justify-between gap-3 border-t border-[#eceae6] px-4 py-3 text-[9px] text-[#888] sm:px-5"><span id="recordCount">0 rows</span><div class="flex items-center gap-2"><button id="prevCatalogRows" class="rounded border border-[#deddda] px-2.5 py-1.5 font-bold disabled:opacity-40" disabled>Previous</button><span id="catalogPageNumber" class="min-w-[38px] text-center font-bold"></span><button id="nextCatalogRows" class="rounded border border-[#deddda] px-2.5 py-1.5 font-bold disabled:opacity-40" disabled>Next</button></div></div>
+					</section>
+				</div>
+			</section>
 
-					<div class="stats-grid grid grid-cols-3 gap-3">
-						<article class="fade-up rounded border border-[#e4e1dc] bg-white p-4 delay-1">
-							<div class="flex items-center justify-between"><span class="text-[10px] font-bold text-[#666]">Imported rows</span><span class="flex h-8 w-8 items-center justify-center rounded bg-[#f9eeee] text-[#b44e50]"><i data-lucide="table-properties" class="h-4 w-4"></i></span></div>
-							<div id="totalDesigns" class="mt-3 text-[25px] font-extrabold">0</div><div class="mt-1 text-[9px] text-[#888]">Across all worksheets</div>
-						</article>
-						<article class="fade-up rounded border border-[#e4e1dc] bg-white p-4 delay-2">
-							<div class="flex items-center justify-between"><span class="text-[10px] font-bold text-[#666]">In review</span><span class="flex h-8 w-8 items-center justify-center rounded bg-[#fff4e1] text-[#9c6c1c]"><i data-lucide="clock-3" class="h-4 w-4"></i></span></div>
-							<div id="reviewDesigns" class="mt-3 text-[25px] font-extrabold">0</div><div class="mt-1 text-[9px] text-[#888]">Waiting for feedback</div>
-						</article>
-						<article class="fade-up rounded border border-[#e4e1dc] bg-white p-4 delay-3">
-							<div class="flex items-center justify-between"><span class="text-[10px] font-bold text-[#666]">Approved</span><span class="flex h-8 w-8 items-center justify-center rounded bg-[#eaf4ed] text-[#39714a]"><i data-lucide="circle-check" class="h-4 w-4"></i></span></div>
-							<div id="approvedDesigns" class="mt-3 text-[25px] font-extrabold">0</div><div class="mt-1 text-[9px] text-[#888]">Ready for production</div>
-						</article>
+			<section id="activity" class="scrollbar hidden flex-1 overflow-auto">
+				<div class="mx-auto w-full max-w-[900px] p-4 sm:p-7">
+					<div class="mb-5 flex flex-wrap items-end justify-between gap-3"><div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">Inbox</p><h1 class="text-[22px] font-extrabold">Notifications</h1><p class="mt-1 text-[11px] text-[#777]">Messages from your Sub-admin about your daily shift reports.</p></div><span id="notificationSummary" class="text-[10px] font-semibold text-[#777]" aria-live="polite"></span></div>
+					<section class="overflow-hidden rounded border border-[#e4e1dc] bg-white"><div id="employeeNotifications" class="divide-y divide-[#eceae6]" aria-live="polite"></div><p id="notificationsEmpty" class="hidden px-5 py-12 text-center text-[11px] text-[#888]">You’re all caught up. Sub-admin replies to your reports will appear here.</p></section>
+				</div>
+			</section>
+
+			<section id="shiftReports" class="scrollbar hidden flex-1 overflow-auto">
+				<div class="mx-auto w-full max-w-[1000px] p-4 sm:p-7">
+					<div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+						<div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">Team handoff</p><h1 class="text-[22px] font-extrabold">Daily shift report</h1><p class="mt-1 text-[11px] text-[#777]">Send your work summary and keep the conversation with your sub-admin here.</p></div>
+						<label class="grid gap-1 text-[9px] font-bold uppercase tracking-[.7px] text-[#777]">Shift date<input id="shiftReportDate" type="date" class="h-9 rounded border border-[#deddda] bg-white px-3 text-[11px] font-semibold normal-case tracking-normal text-[#222] outline-none focus:border-[#c95a5f]" /></label>
 					</div>
-
-					<div class="lower-grid mt-5 grid grid-cols-[minmax(0,1.7fr)_minmax(250px,.8fr)] gap-4">
-						<section id="designs" class="fade-up min-w-0 rounded border border-[#e4e1dc] bg-white delay-2">
-							<div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#eceae6] px-4 py-4 sm:px-5">
-								<div><h2 class="text-[12px] font-extrabold">CSI Masterlist</h2><p id="catalogSource" class="mt-1 text-[9px] text-[#888]">Rows from every imported worksheet</p></div>
-							</div>
-							<div class="scrollbar overflow-x-auto">
-								<table class="w-full border-collapse text-left text-[10px]">
-									<thead id="designTableHead"></thead>
-									<tbody id="designTable"></tbody>
-								</table>
-							</div>
-							<div id="emptyState" class="hidden px-5 py-10 text-center text-[11px] text-[#888]">No designs match your search.</div>
-							<div class="flex items-center justify-between gap-3 border-t border-[#eceae6] px-4 py-3 text-[9px] text-[#888] sm:px-5"><span id="recordCount">0 rows</span><div class="flex items-center gap-2"><button id="prevCatalogRows" class="rounded border border-[#deddda] px-2.5 py-1.5 font-bold disabled:opacity-40" disabled>Previous</button><span id="catalogPageNumber" class="min-w-[38px] text-center font-bold"></span><button id="nextCatalogRows" class="rounded border border-[#deddda] px-2.5 py-1.5 font-bold disabled:opacity-40" disabled>Next</button></div></div>
+					<div class="grid gap-4">
+						<section class="rounded border border-[#e4e1dc] bg-white">
+							<div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#eceae6] px-4 py-3"><div><h2 class="text-[11px] font-extrabold">Your recorded edits</h2><p id="shiftEditsSummary" class="mt-1 text-[9px] text-[#888]">Edits saved today will appear here.</p></div><button id="insertShiftEdits" type="button" class="flex h-8 items-center gap-2 rounded border border-[#d9d7d3] px-3 text-[9px] font-bold hover:bg-[#faf9f7]"><i data-lucide="list-plus" class="h-3.5 w-3.5"></i>Add edits to report</button></div>
+							<div id="shiftEditsList" class="max-h-40 space-y-2 overflow-y-auto p-4"></div>
 						</section>
-
-						<aside id="activity" class="fade-up rounded border border-[#e4e1dc] bg-white delay-3">
-							<div class="flex items-center justify-between border-b border-[#eceae6] px-4 py-4"><h2 class="text-[12px] font-extrabold">Recent activity</h2><i data-lucide="ellipsis" class="h-4 w-4 text-[#888]"></i></div>
-                            <div id="employeeActivityFeed" class="space-y-5 p-4"></div>
-							<div class="mx-4 border-t border-[#eceae6] py-3"><span class="text-[9px] text-[#999]">Employee activity is shared with the sub-admin workspace.</span></div>
-						</aside>
+						<section class="overflow-hidden rounded border border-[#e4e1dc] bg-white">
+							<div class="flex items-center justify-between border-b border-[#eceae6] px-4 py-3"><div><h2 id="shiftThreadTitle" class="text-[11px] font-extrabold">Report conversation</h2><p id="shiftThreadSubtitle" class="mt-1 text-[9px] text-[#888]">Daily handoff with Sub-admin</p></div><span id="shiftReportState" class="text-[9px] font-semibold text-[#888]" aria-live="polite"></span></div>
+							<div id="shiftReportMessages" class="scrollbar flex max-h-[42vh] min-h-[190px] flex-col gap-3 overflow-y-auto bg-[#fbfbfa] p-4" aria-live="polite"></div>
+							<form id="shiftReportForm" class="border-t border-[#eceae6] p-4"><label for="shiftReportMessage" class="mb-2 block text-[9px] font-bold uppercase tracking-[.7px] text-[#777]">Daily report or message</label><textarea id="shiftReportMessage" required maxlength="4000" rows="4" placeholder="Summarize what you completed, blockers, and what needs follow-up..." class="w-full resize-y rounded border border-[#deddda] p-3 text-[11px] outline-none focus:border-[#c95a5f]"></textarea><div class="mt-2 flex items-center justify-between gap-3"><span id="shiftReportStatus" class="text-[9px] text-[#55805d]" aria-live="polite"></span><button id="sendShiftReport" type="submit" class="flex h-9 items-center gap-2 rounded bg-[#b84e51] px-4 text-[10px] font-bold text-white hover:bg-[#a64347]"><i data-lucide="send" class="h-3.5 w-3.5"></i><span>Send report</span></button></div></form>
+						</section>
 					</div>
 				</div>
 			</section>
@@ -139,6 +223,8 @@
 		const WORKBOOK_KEY = 'aoi_imported_workbook';
 		const ACTIVE_SHEET_KEY = 'aoi_active_sheet_name';
 		const ACTIVITY_STORAGE_KEY = 'aoi_employee_activity';
+		const SHIFT_REPORTS_KEY = 'aoi_shift_reports';
+		const SHIFT_NOTIFICATION_READ_KEY = 'aoi_shift_notification_reads';
 		const PERMISSIONS_KEY = 'aoi_employee_permissions';
 		const PAGE_SIZE = 10;
 		function getDesignValue(design, aliases, fallback = '') {
@@ -209,8 +295,8 @@
 			const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
 			currentPage = Math.min(currentPage, pageCount);
 			const pageRows = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-			tableHead.innerHTML = `<tr class="bg-[#faf9f7] text-[9px] uppercase tracking-[.7px] text-[#777]"><th class="whitespace-nowrap px-3 py-3 font-bold">Worksheet</th>${catalogHeaders.map(header => `<th class="whitespace-nowrap px-3 py-3 font-bold">${escapeHtml(header)}</th>`).join('')}<th class="px-3 py-3 font-bold">Details</th></tr>`;
-			table.innerHTML = pageRows.map(design => `<tr class="border-t border-[#f0efec] hover:bg-[#fcfbf9]"><td class="whitespace-nowrap px-3 py-3 font-bold text-[#555]">${escapeHtml(design._sourceSheet)}</td>${catalogHeaders.map(header => `<td class="max-w-[280px] px-3 py-3 text-[#555]">${escapeHtml(design._sourceRecord[header] ?? '')}</td>`).join('')}<td class="px-3 py-3"><button type="button" data-view-catalog-row="${design._sourceIndex}" class="whitespace-nowrap rounded border border-[#deddda] px-2 py-1.5 text-[9px] font-bold hover:bg-[#f7f7f5]">View details</button></td></tr>`).join('');
+			tableHead.innerHTML = `<tr class="bg-[#faf9f7] text-[9px] uppercase tracking-[.7px] text-[#777]"><th class="whitespace-nowrap px-3 py-3 font-bold">Worksheet</th>${catalogHeaders.map(header => `<th class="whitespace-nowrap px-3 py-3 font-bold">${escapeHtml(header)}</th>`).join('')}</tr>`;
+			table.innerHTML = pageRows.map(design => `<tr data-view-catalog-row="${design._sourceIndex}" tabindex="0" aria-label="Open details for ${escapeHtml(design.name)}" class="cursor-pointer border-t border-[#f0efec] hover:bg-[#fcfbf9] focus:bg-[#fcfbf9] focus:outline focus:outline-1 focus:outline-inset focus:outline-[#c95a5f]"><td class="whitespace-nowrap px-3 py-3 font-bold text-[#555]">${escapeHtml(design._sourceSheet)}</td>${catalogHeaders.map(header => `<td class="max-w-[280px] px-3 py-3 text-[#555]">${escapeHtml(design._sourceRecord[header] ?? '')}</td>`).join('')}</tr>`).join('');
 			document.getElementById('emptyState').classList.toggle('hidden', filtered.length > 0);
 			document.getElementById('emptyState').textContent = hasImportedRows ? 'No rows match your search.' : 'No imported workbook is available.';
 			document.getElementById('recordCount').textContent = `${filtered.length} imported ${filtered.length === 1 ? 'row' : 'rows'}`;
@@ -219,8 +305,10 @@
 			document.getElementById('nextCatalogRows').disabled = currentPage >= pageCount;
 			document.getElementById('catalogSource').textContent = hasImportedRows ? `${filtered.length} matching row(s) across ${workbookSheets.length} imported worksheet(s)` : 'Import a workbook to populate the CSI Masterlist.';
 			document.getElementById('totalDesigns').textContent = designs.length;
+			document.getElementById('totalDesignsSecondary').textContent = designs.length;
 			document.getElementById('reviewDesigns').textContent = designs.filter(design => String(getDesignValue(design._sourceRecord, ['status'], '')).toLowerCase() === 'in review').length;
 			document.getElementById('approvedDesigns').textContent = designs.filter(design => String(getDesignValue(design._sourceRecord, ['status'], '')).toLowerCase() === 'approved').length;
+			document.getElementById('approvedDesignsSecondary').textContent = designs.filter(design => String(getDesignValue(design._sourceRecord, ['status'], '')).toLowerCase() === 'approved').length;
 		}
 
 		function escapeHtml(value) {
@@ -232,12 +320,174 @@
 				const entries = JSON.parse(localStorage.getItem(ACTIVITY_STORAGE_KEY) || '[]');
 				const email = sessionStorage.getItem('aoiEmail') || '';
 				const employee = sessionStorage.getItem('aoiName') || (email === 'employee@aoi.com' ? 'Raque Canete' : email.split('@')[0] || 'Employee');
-				entries.unshift({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, employee, description, recorded: new Date().toLocaleString(), ...rowDetails });
+				entries.unshift({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, employee, email, description, timestamp: new Date().toISOString(), recorded: new Date().toLocaleString(), ...rowDetails });
 				localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(entries.slice(0, 500)));
 			} catch (error) {
 				console.warn('Could not record employee activity.', error);
 			}
 		}
+
+		function localDateKey(date) {
+			return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+		}
+
+		function getShiftReportContext() {
+			const email = (sessionStorage.getItem('aoiEmail') || 'employee@aoi.com').toLowerCase();
+			const employee = sessionStorage.getItem('aoiName') || (email === 'employee@aoi.com' ? 'Raque Canete' : email.split('@')[0]);
+			const shiftDate = document.getElementById('shiftReportDate').value;
+			let reports = [];
+			try {
+				const stored = JSON.parse(localStorage.getItem(SHIFT_REPORTS_KEY) || '[]');
+				reports = Array.isArray(stored) ? stored : [];
+			} catch (error) {
+				console.warn('Could not read shift reports.', error);
+			}
+			return { email, employee, shiftDate, reports, report: reports.find(item => item.email === email && item.shiftDate === shiftDate) };
+		}
+
+		function getEditsForShift(shiftDate) {
+			try {
+				const entries = JSON.parse(localStorage.getItem(ACTIVITY_STORAGE_KEY) || '[]');
+				const email = (sessionStorage.getItem('aoiEmail') || 'employee@aoi.com').toLowerCase();
+				const employee = sessionStorage.getItem('aoiName') || (email === 'employee@aoi.com' ? 'Raque Canete' : email.split('@')[0]);
+				return (Array.isArray(entries) ? entries : []).filter(entry => {
+					if (!Array.isArray(entry.changes) || !entry.changes.length) return false;
+					if (entry.email ? entry.email.toLowerCase() !== email : entry.employee && entry.employee !== employee) return false;
+					const date = new Date(entry.timestamp || entry.recorded || '');
+					return !Number.isNaN(date.getTime()) && localDateKey(date) === shiftDate;
+				});
+			} catch (error) {
+				return [];
+			}
+		}
+
+		function renderShiftReport() {
+			const context = getShiftReportContext();
+			const edits = getEditsForShift(context.shiftDate);
+			const report = context.report;
+			document.getElementById('shiftThreadTitle').textContent = report ? `${context.shiftDate} shift report` : 'Report conversation';
+			document.getElementById('shiftThreadSubtitle').textContent = report ? `Conversation with Sub-admin · ${context.employee}` : 'Daily handoff with Sub-admin';
+			document.getElementById('shiftReportState').textContent = report ? 'Report sent' : 'Not sent';
+			document.getElementById('shiftReportMessages').innerHTML = report?.messages?.length ? report.messages.map(message => {
+				const fromEmployee = message.sender === 'employee';
+				return `<article class="max-w-[85%] rounded border ${fromEmployee ? 'self-end border-[#e9b8bc] bg-[#fff1f2]' : 'self-start border-[#e4e1dc] bg-white'} px-3 py-2.5"><div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1"><span class="text-[9px] font-extrabold">${escapeHtml(message.senderName || (fromEmployee ? context.employee : 'Sub-admin'))}</span><time class="text-[8px] text-[#888]">${escapeHtml(message.recorded || '')}</time></div><p class="mt-1 whitespace-pre-wrap break-words text-[10px] leading-relaxed text-[#333]">${escapeHtml(message.text)}</p></article>`;
+			}).join('') : '<p class="m-auto max-w-[360px] text-center text-[10px] leading-relaxed text-[#888]">No report sent for this date. Write your shift summary below to start the conversation.</p>';
+			const messages = document.getElementById('shiftReportMessages');
+			messages.scrollTop = messages.scrollHeight;
+			document.getElementById('shiftReportForm').querySelector('button[type="submit"] span').textContent = report ? 'Send message' : 'Send report';
+			document.getElementById('shiftEditsSummary').textContent = `${edits.length} saved edit${edits.length === 1 ? '' : 's'} on this shift date.`;
+			document.getElementById('shiftEditsList').innerHTML = edits.length ? edits.map(entry => `<article class="rounded border border-[#eceae6] bg-[#fbfbfa] px-3 py-2"><div class="flex flex-wrap justify-between gap-2"><span class="text-[9px] font-bold">${escapeHtml(entry.rowName || 'CSI row')}</span><time class="text-[8px] text-[#888]">${escapeHtml(entry.recorded || '')}</time></div><p class="mt-1 text-[9px] text-[#666]">${entry.changes.map(change => `${escapeHtml(change.header)}: ${escapeHtml(change.before || '—')} to ${escapeHtml(change.after || '—')}`).join(' · ')}</p></article>`).join('') : '<p class="text-[9px] text-[#888]">No saved CSI row edits for this date.</p>';
+		}
+
+		function getSubadminReplies() {
+			const email = (sessionStorage.getItem('aoiEmail') || 'employee@aoi.com').toLowerCase();
+			try {
+				const reports = JSON.parse(localStorage.getItem(SHIFT_REPORTS_KEY) || '[]');
+				return (Array.isArray(reports) ? reports : []).filter(report => (report.email || '').toLowerCase() === email).flatMap(report =>
+					(report.messages || []).filter(message => message.sender === 'sub-admin').map(message => ({ ...message, reportId: report.id, shiftDate: report.shiftDate, employee: report.employee }))
+				).sort((left, right) => new Date(right.timestamp || right.recorded || 0) - new Date(left.timestamp || left.recorded || 0));
+			} catch (error) {
+				console.warn('Could not load employee notifications.', error);
+				return [];
+			}
+		}
+
+		function getReadNotificationIds(email) {
+			try {
+				const readByEmployee = JSON.parse(localStorage.getItem(SHIFT_NOTIFICATION_READ_KEY) || '{}');
+				return Array.isArray(readByEmployee[email]) ? readByEmployee[email] : [];
+			} catch (error) {
+				return [];
+			}
+		}
+
+		function renderEmployeeNotifications() {
+			const email = (sessionStorage.getItem('aoiEmail') || 'employee@aoi.com').toLowerCase();
+			const replies = getSubadminReplies();
+			const readIds = new Set(getReadNotificationIds(email));
+			const unreadCount = replies.filter(message => !readIds.has(message.id)).length;
+			const badge = document.getElementById('activityNotificationBadge');
+			badge.textContent = unreadCount > 9 ? '9+' : String(unreadCount);
+			badge.classList.toggle('hidden', unreadCount === 0);
+			document.getElementById('notificationDot').classList.toggle('hidden', unreadCount === 0);
+			document.getElementById('notificationSummary').textContent = unreadCount ? `${unreadCount} unread message${unreadCount === 1 ? '' : 's'}` : 'All caught up';
+			document.getElementById('employeeNotifications').innerHTML = replies.map(message => {
+				const unread = !readIds.has(message.id);
+				return `<button type="button" data-notification-message="${escapeHtml(message.id)}" class="flex w-full items-start gap-3 px-4 py-4 text-left transition hover:bg-[#fbfbfa] ${unread ? 'bg-[#fffafa]' : 'bg-white'}"><span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded bg-[#f9eeee] text-[#b44e50]"><i data-lucide="message-square-text" class="h-4 w-4"></i></span><span class="min-w-0 flex-1"><span class="flex flex-wrap items-center justify-between gap-2"><span class="text-[10px] font-extrabold">Sub-admin replied to your ${escapeHtml(message.shiftDate || 'daily')} shift report</span><time class="text-[9px] text-[#888]">${escapeHtml(message.recorded || '')}</time></span><span class="mt-1 block whitespace-pre-wrap break-words text-[10px] leading-relaxed text-[#555]">${escapeHtml(message.text)}</span><span class="mt-2 block text-[9px] font-semibold text-[#a75452]">Open report conversation</span></span>${unread ? '<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#f04b45]" aria-label="Unread"></span>' : ''}</button>`;
+			}).join('');
+			document.getElementById('notificationsEmpty').classList.toggle('hidden', replies.length > 0);
+			lucide.createIcons();
+		}
+
+		function openEmployeeNotification(messageId) {
+			const email = (sessionStorage.getItem('aoiEmail') || 'employee@aoi.com').toLowerCase();
+			const notification = getSubadminReplies().find(message => String(message.id) === String(messageId));
+			if (!notification) return;
+			let readByEmployee = {};
+			try {
+				readByEmployee = JSON.parse(localStorage.getItem(SHIFT_NOTIFICATION_READ_KEY) || '{}');
+			} catch (error) {
+				readByEmployee = {};
+			}
+			const readIds = new Set(Array.isArray(readByEmployee[email]) ? readByEmployee[email] : []);
+			readIds.add(notification.id);
+			readByEmployee[email] = [...readIds];
+			localStorage.setItem(SHIFT_NOTIFICATION_READ_KEY, JSON.stringify(readByEmployee));
+			document.getElementById('shiftReportDate').value = notification.shiftDate;
+			document.querySelector('.nav-link[data-section="reports"]').click();
+			renderEmployeeNotifications();
+		}
+
+		document.getElementById('employeeNotifications').addEventListener('click', event => {
+			const notification = event.target.closest('[data-notification-message]');
+			if (notification) openEmployeeNotification(notification.dataset.notificationMessage);
+		});
+
+		document.getElementById('shiftReportDate').value = localDateKey(new Date());
+		document.getElementById('shiftReportDate').addEventListener('change', renderShiftReport);
+		document.getElementById('insertShiftEdits').addEventListener('click', () => {
+			const edits = getEditsForShift(document.getElementById('shiftReportDate').value);
+			if (!edits.length) {
+				document.getElementById('shiftReportStatus').textContent = 'No saved edits for this date.';
+				return;
+			}
+			const summary = edits.map(entry => `- ${entry.rowName || 'CSI row'}: ${entry.changes.map(change => `${change.header} changed from "${change.before || '—'}" to "${change.after || '—'}"`).join('; ')}`).join('\n');
+			const textarea = document.getElementById('shiftReportMessage');
+			textarea.value = `${textarea.value.trim()}${textarea.value.trim() ? '\n\n' : ''}Edits completed:\n${summary}`;
+			textarea.focus();
+			document.getElementById('shiftReportStatus').textContent = 'Today’s saved edits were added to your draft.';
+		});
+		document.getElementById('shiftReportForm').addEventListener('submit', event => {
+			event.preventDefault();
+			const context = getShiftReportContext();
+			const text = document.getElementById('shiftReportMessage').value.trim();
+			if (!text || !context.shiftDate) return;
+			const timestamp = new Date();
+			const message = { id: `${timestamp.getTime()}-${Math.random().toString(16).slice(2)}`, sender: 'employee', senderName: context.employee, text, timestamp: timestamp.toISOString(), recorded: timestamp.toLocaleString() };
+			let report = context.report;
+			if (!report) {
+				report = { id: `${context.email}-${context.shiftDate}`, email: context.email, employee: context.employee, shiftDate: context.shiftDate, createdAt: timestamp.toISOString(), messages: [] };
+				context.reports.unshift(report);
+			}
+			report.messages = [...(report.messages || []), message];
+			report.updatedAt = message.timestamp;
+			try {
+				localStorage.setItem(SHIFT_REPORTS_KEY, JSON.stringify(context.reports));
+				document.getElementById('shiftReportMessage').value = '';
+				document.getElementById('shiftReportStatus').textContent = 'Sent to Sub-admin.';
+				renderShiftReport();
+			} catch (error) {
+				document.getElementById('shiftReportStatus').textContent = 'Could not save this report in browser storage.';
+			}
+		});
+		window.addEventListener('storage', event => {
+			if (event.key === SHIFT_REPORTS_KEY) {
+				renderShiftReport();
+				renderEmployeeNotifications();
+			}
+			if (event.key === SHIFT_NOTIFICATION_READ_KEY) renderEmployeeNotifications();
+			if (event.key === ACTIVITY_STORAGE_KEY) renderShiftReport();
+		});
 
 		function openCatalogRow(sourceIndex) {
 			const design = designs.find(item => item._sourceIndex === sourceIndex);
@@ -251,7 +501,7 @@
 			renderCatalogRowFields(record, false);
 			document.getElementById('editCatalogRow').classList.toggle('hidden', !hasImportedRows || !employeeCanEditRows());
 			document.getElementById('saveCatalogRow').classList.add('hidden');
-			recordEmployeeActivity(`Viewed catalog row: ${rowName}.`, { rowId: design._sourceId, rowName, rowBrand });
+			recordEmployeeActivity(`Viewed catalog row: ${rowName}.`, { type: 'csi_visit', rowId: design._sourceId, rowName, rowBrand, sheetName: design._sourceSheet });
 			renderEmployeeActivity();
 			document.getElementById('catalogRowDialog').showModal();
 			lucide.createIcons();
@@ -330,8 +580,11 @@
 
 		function renderEmployeeActivity() {
 			const entries = JSON.parse(localStorage.getItem(ACTIVITY_STORAGE_KEY) || '[]');
-			const feed = document.getElementById('employeeActivityFeed');
-			feed.innerHTML = entries.slice(0, 3).map(entry => `<div class="flex gap-3"><span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f9eeee] text-[#b44e50]"><i data-lucide="activity" class="h-3.5 w-3.5"></i></span><div><p class="text-[10px] leading-relaxed"><b>${escapeHtml(entry.employee)}</b> ${escapeHtml(entry.description)}</p><p class="mt-1 text-[9px] text-[#999]">${escapeHtml(entry.recorded)}</p></div></div>`).join('') || '<p class="text-[10px] text-[#888]">No recent activity.</p>';
+			const overviewFeed = document.getElementById('employeeActivityFeed');
+			const recentFeed = document.getElementById('recentActivityFeed');
+			const html = entries.slice(0, 3).map(entry => `<div class="flex gap-3"><span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f9eeee] text-[#b44e50]"><i data-lucide="activity" class="h-3.5 w-3.5"></i></span><div><p class="text-[10px] leading-relaxed"><b>${escapeHtml(entry.employee)}</b> ${escapeHtml(entry.description)}</p><p class="mt-1 text-[9px] text-[#999]">${escapeHtml(entry.recorded)}</p></div></div>`).join('') || '<p class="text-[10px] text-[#888]">No recent activity.</p>';
+			if (overviewFeed) overviewFeed.innerHTML = html;
+			if (recentFeed) recentFeed.innerHTML = html;
 			lucide.createIcons();
 		}
 
@@ -353,8 +606,15 @@
 			}
 		});
 		table.addEventListener('click', event => {
-			const button = event.target.closest('[data-view-catalog-row]');
-			if (button) openCatalogRow(Number(button.dataset.viewCatalogRow));
+			const row = event.target.closest('[data-view-catalog-row]');
+			if (row) openCatalogRow(Number(row.dataset.viewCatalogRow));
+		});
+		table.addEventListener('keydown', event => {
+			if (event.key !== 'Enter' && event.key !== ' ') return;
+			const row = event.target.closest('[data-view-catalog-row]');
+			if (!row) return;
+			event.preventDefault();
+			openCatalogRow(Number(row.dataset.viewCatalogRow));
 		});
 		document.getElementById('editCatalogRow').addEventListener('click', () => {
 			if (!employeeCanEditRows()) return;
@@ -398,14 +658,25 @@
 		document.querySelectorAll('.nav-link').forEach((link) => link.addEventListener('click', () => {
 			document.querySelectorAll('.nav-link').forEach((item) => item.classList.remove('active'));
 			link.classList.add('active');
+			const showDesigns = link.dataset.section === 'designs';
+			const showReports = link.dataset.section === 'reports';
+			const showNotifications = link.dataset.section === 'activity';
+			document.getElementById('overview').classList.toggle('hidden', showDesigns || showReports || showNotifications);
+			document.getElementById('designs').classList.toggle('hidden', !showDesigns);
+			document.getElementById('activity').classList.toggle('hidden', !showNotifications);
+			document.getElementById('shiftReports').classList.toggle('hidden', !showReports);
+			if (showReports) renderShiftReport();
+			if (showNotifications) renderEmployeeNotifications();
 			document.body.classList.remove('menu-open');
 		}));
 		document.getElementById('notificationBtn').addEventListener('click', () => {
-			window.alert('You are all caught up.');
+			document.querySelector('.nav-link[data-section="activity"]').click();
 		});
 		renderDesigns();
 		recordEmployeeActivity('Viewed the employee dashboard.');
 		renderEmployeeActivity();
+		renderShiftReport();
+		renderEmployeeNotifications();
 		lucide.createIcons();
 	</script>
 </body>

@@ -17,6 +17,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <script src="accounts.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -279,16 +280,6 @@
                             placeholder:text-[#222222]"
                             required>
 
-                        <!-- Forgot Password -->
-                        <button
-                            type="button"
-                            id="forgotPassword"
-                            class="text-[9px] text-[#777777]
-                            whitespace-nowrap ml-3
-                            hover:text-black transition">
-                            Forgot Password
-                        </button>
-
                     </div>
 
                 </div>
@@ -377,26 +368,12 @@
         No backend/API is connected.
         */
 
-        // Hardcoded front-end demo accounts
-        const accounts = {
-            "admin@aoi.com": {
-                password: "admin123",
-                role: "admin",
-                name: "Raque Canete",
-                dashboard: "admin-dashboard.html"
-            },
-            "employee@aoi.com": {
-                password: "employee123",
-                role: "employee",
-                name: "Raque Canete",
-                dashboard: "employee-dashboard.html"
-            },
-            "subadmin@aoi.com": {
-                password: "subadmin123",
-                role: "sub-admin",
-                name: "Sub-admin",
-                dashboard: "subadmin-dashboard.html"
-            }
+        const LOGIN_ACTIVITY_KEY = 'aoi_login_activity';
+        const dashboardsByRole = {
+            admin: 'admin-dashboard.html',
+            employee: 'employee-dashboard.html',
+            'sub-admin': 'subadmin-dashboard.html',
+            'item-checker': 'item-checker-dashboard.html'
         };
 
         loginForm.addEventListener('submit', function (event) {
@@ -421,9 +398,9 @@
                 buttonText.classList.remove('hidden');
                 buttonLoader.classList.add('hidden');
 
-                const account = accounts[emailValue];
+                const account = AOIAccountStore.getAll().find(user => user.email === emailValue);
 
-                if (!account || account.password !== passwordValue) {
+                if (!account || !account.active || account.password !== passwordValue) {
                     showMessage(
                         'Invalid email or password.',
                         'error'
@@ -431,10 +408,27 @@
                     return;
                 }
 
+                account.dashboard = dashboardsByRole[account.role];
+
                 sessionStorage.setItem('aoiLoggedIn', 'true');
                 sessionStorage.setItem('aoiRole', account.role);
                 sessionStorage.setItem('aoiEmail', emailValue);
                 sessionStorage.setItem('aoiName', account.name);
+                try {
+                    const storedLogins = JSON.parse(localStorage.getItem(LOGIN_ACTIVITY_KEY) || '[]');
+                    const logins = Array.isArray(storedLogins) ? storedLogins : [];
+                    logins.unshift({
+                        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                        name: account.name,
+                        email: emailValue,
+                        role: account.role,
+                        timestamp: new Date().toISOString(),
+                        recorded: new Date().toLocaleString()
+                    });
+                    localStorage.setItem(LOGIN_ACTIVITY_KEY, JSON.stringify(logins.slice(0, 500)));
+                } catch (error) {
+                    console.warn('Could not record sign-in activity.', error);
+                }
 
                 showMessage(
                     `Welcome! Redirecting to the ${account.role} dashboard...`,
@@ -455,7 +449,7 @@
         ========================================
         */
 
-        forgotPassword.addEventListener('click', function () {
+        forgotPassword?.addEventListener('click', function () {
 
             const emailValue = email.value.trim();
 

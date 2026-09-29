@@ -26,6 +26,9 @@
       main { width: 100% !important; min-width: 0 !important; }
       .stats-grid { grid-template-columns: minmax(0, 1fr) !important; }
       table { min-width: 650px; }
+      .reports-grid { grid-template-columns: minmax(0, 1fr) !important; }
+      .reports-grid > aside { max-height: 250px; }
+      .reports-grid > section { min-height: 430px; }
     }
     @media (min-width: 768px) { #mobileMenuBtn { display: none !important; } }
   </style>
@@ -41,6 +44,8 @@
         <button class="nav-link active flex h-10 w-full items-center gap-3 rounded px-3 text-left text-[12px] font-bold" data-view="workbook"><i data-lucide="table-properties" class="h-4 w-4"></i>Workbook rows</button>
         <button class="nav-link flex h-10 w-full items-center gap-3 rounded px-3 text-left text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-view="activity"><i data-lucide="users-round" class="h-4 w-4"></i>Employee activity</button>
         <button class="nav-link flex h-10 w-full items-center gap-3 rounded px-3 text-left text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-view="employees"><i data-lucide="shield-check" class="h-4 w-4"></i>Employee access</button>
+        <button class="nav-link flex h-10 w-full items-center gap-3 rounded px-3 text-left text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-view="reports"><i data-lucide="messages-square" class="h-4 w-4"></i>Reports</button>
+        <button class="nav-link flex h-10 w-full items-center gap-3 rounded px-3 text-left text-[12px] font-semibold text-[#555] hover:bg-[#f7f7f5]" data-view="sample-monitoring"><i data-lucide="scan-eye" class="h-4 w-4"></i>Sample Room Monitoring</button>
       </nav>
       <div class="mt-auto border-t border-[#e7e5e2] p-4">
         <div class="mb-4 flex items-center gap-3"><div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5e7e5] text-[11px] font-extrabold text-[#963e3d]">SA</div><div><div class="text-[11px] font-extrabold">Sub-admin</div><div class="mt-0.5 text-[9px] text-[#777]">Data manager</div></div></div>
@@ -91,6 +96,34 @@
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#eceae6] px-4 py-4 sm:px-5"><div><h2 class="text-[12px] font-extrabold">Employee access</h2><p class="mt-1 text-[9px] text-[#888]">Choose whether each employee can edit imported row details or view them only.</p></div><span id="employeeAccessSaved" class="text-[9px] text-[#55805d]" aria-live="polite"></span></div>
             <div class="scrollbar overflow-x-auto"><table class="w-full min-w-[620px] border-collapse text-left text-[10px]"><thead><tr class="bg-[#faf9f7] text-[9px] uppercase tracking-[.7px] text-[#777]"><th class="px-4 py-3 font-bold">Employee</th><th class="px-3 py-3 font-bold">Account</th><th class="px-4 py-3 font-bold">Imported row access</th></tr></thead><tbody id="employeeAccessBody"></tbody></table></div>
           </section>
+          <section id="shiftReportsView" class="hidden">
+            <div class="mb-4 flex flex-wrap items-end justify-between gap-3"><div><h2 class="text-[14px] font-extrabold">Daily shift reports</h2><p class="mt-1 text-[10px] text-[#777]">Employee handoffs and replies.</p></div><span id="shiftReportCount" class="text-[9px] font-semibold text-[#777]"></span></div>
+            <div class="reports-grid grid min-h-[560px] grid-cols-[minmax(220px,.75fr)_minmax(0,1.5fr)] gap-4">
+              <aside class="flex min-h-0 flex-col overflow-hidden rounded border border-[#e4e1dc] bg-white">
+                <div class="border-b border-[#eceae6] px-4 py-3"><h3 class="text-[11px] font-extrabold">Inbox</h3><input id="shiftReportSearch" type="search" placeholder="Search employee..." class="mt-2 h-8 w-full rounded border border-[#deddda] px-3 text-[10px] outline-none focus:border-[#c95a5f]" /></div>
+                <div id="shiftReportList" class="scrollbar flex-1 space-y-1 overflow-y-auto p-2"></div>
+                <p id="shiftReportInboxEmpty" class="hidden px-4 py-8 text-center text-[10px] text-[#888]">No shift reports yet.</p>
+              </aside>
+              <section class="flex min-h-0 flex-col overflow-hidden rounded border border-[#e4e1dc] bg-white">
+                <div class="border-b border-[#eceae6] px-4 py-3"><h3 id="shiftReportThreadTitle" class="text-[11px] font-extrabold">Select a shift report</h3><p id="shiftReportThreadSubtitle" class="mt-1 text-[9px] text-[#888]">Employee reports and replies appear here.</p></div>
+                <div id="shiftReportThread" class="scrollbar flex flex-1 flex-col gap-3 overflow-y-auto bg-[#fbfbfa] p-4" aria-live="polite"></div>
+                <form id="shiftReportReplyForm" class="border-t border-[#eceae6] p-4"><label for="shiftReportReply" class="mb-2 block text-[9px] font-bold uppercase tracking-[.7px] text-[#777]">Reply to employee</label><textarea id="shiftReportReply" required maxlength="4000" rows="3" disabled placeholder="Write a reply..." class="w-full resize-y rounded border border-[#deddda] p-3 text-[10px] outline-none focus:border-[#c95a5f] disabled:bg-gray-50"></textarea><div class="mt-2 flex justify-end"><button id="sendShiftReportReply" type="submit" disabled class="flex h-8 items-center gap-2 rounded bg-[#b84e51] px-3 text-[9px] font-bold text-white hover:bg-[#a64347] disabled:cursor-not-allowed disabled:opacity-40"><i data-lucide="send" class="h-3.5 w-3.5"></i>Send reply</button></div></form>
+              </section>
+            </div>
+          </section>
+          <section id="sampleMonitoringView" class="hidden">
+            <div class="mb-4 flex flex-wrap items-end justify-between gap-3"><div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.2px] text-[#b65a58]">CSI workbook</p><h2 class="text-[14px] font-extrabold">Sample Room Monitoring</h2><p id="sampleMonitorSource" class="mt-1 text-[10px] text-[#777]">Waiting for an imported CSI workbook.</p></div><div class="flex w-full flex-wrap items-center gap-2 sm:w-auto"><span id="sampleMonitorRowCount" class="text-[9px] font-semibold text-[#777]"></span><input id="sampleMonitorSearch" type="search" placeholder="Search monitored rows..." class="h-8 w-full rounded border border-[#deddda] px-3 text-[10px] outline-none focus:border-[#c95a5f] sm:w-[230px]" /><button id="sampleMonitorExportBtn" type="button" class="flex h-8 items-center gap-2 rounded border border-[#d9d7d3] bg-white px-3 text-[10px] font-bold hover:bg-[#faf9f7]"><i data-lucide="download" class="h-3.5 w-3.5"></i>Export CSV</button></div></div>
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded border border-[#e4e1dc] bg-white px-4 py-3"><div><div class="text-[10px] font-extrabold">Final Item Check</div><p id="finalCsiForwardStatus" class="mt-1 text-[9px] text-[#777]">No CSI file forwarded for final check.</p></div><button id="forwardFinalCsiBtn" type="button" class="flex h-9 items-center gap-2 rounded bg-[#b84e51] px-3 text-[10px] font-bold text-white hover:bg-[#a64347] disabled:cursor-not-allowed disabled:opacity-40"><i data-lucide="send" class="h-4 w-4"></i>Forward final CSI</button></div>
+            <details class="mb-4 rounded border border-[#e4e1dc] bg-white">
+              <summary class="cursor-pointer border-b border-[#eceae6] px-4 py-3 text-[10px] font-extrabold">Choose and edit displayed headers</summary>
+              <p class="px-4 pt-3 text-[9px] text-[#777]">Choose which CSI columns appear and set a display label. Source workbook headers and data stay unchanged.</p>
+              <div id="sampleMonitorHeaderOptions" class="grid gap-2 p-4 sm:grid-cols-2"></div>
+            </details>
+            <section class="overflow-hidden rounded border border-[#e4e1dc] bg-white">
+              <div class="scrollbar max-h-[68vh] overflow-auto"><table class="w-full min-w-[720px] border-collapse text-left text-[10px]"><thead id="sampleMonitorHead" class="sticky top-0 z-10 bg-[#faf9f7]"></thead><tbody id="sampleMonitorRows"></tbody></table></div>
+              <p id="sampleMonitorEmpty" class="hidden px-5 py-12 text-center text-[10px] text-[#888]">No matching CSI rows are available.</p>
+            </section>
+          </section>
           <div id="toast" class="fixed bottom-4 right-4 z-50 hidden max-w-[calc(100vw-32px)] rounded bg-[#20201f] px-4 py-3 text-[11px] font-semibold text-white shadow-lg" role="status" aria-live="polite"></div>
         </div>
       </section>
@@ -109,6 +142,7 @@
     <div class="border-t border-[#eceae6] px-5 py-3 text-right"><button id="closeRowDetailsFooter" class="rounded border border-[#deddda] px-3 py-2 text-[10px] font-bold" type="button">Close</button></div>
   </dialog>
 
+  <script src="accounts.js"></script>
   <script>
     const ROW_KEY = 'aoi_imported_designs';
     const HEADER_KEY = 'aoi_imported_headers';
@@ -116,6 +150,11 @@
     const WORKBOOK_KEY = 'aoi_imported_workbook';
     const ACTIVE_SHEET_KEY = 'aoi_active_sheet_name';
     const ACTIVITY_KEY = 'aoi_employee_activity';
+    const SHIFT_REPORTS_KEY = 'aoi_shift_reports';
+    const ACCOUNTS_KEY = 'aoi_user_accounts';
+    const WORKBOOK_NAME_KEY = 'aoi_imported_workbook_name';
+    const FINAL_CSI_REVIEW_KEY = 'aoi_final_csi_review';
+    const SAMPLE_MONITOR_COLUMNS_KEY = 'aoi_sample_monitor_columns';
     const PERMISSIONS_KEY = 'aoi_employee_permissions';
     const PAGE_SIZE = 10;
     const employeeAccounts = [{ name: 'Raque Canete', email: 'employee@aoi.com' }];
@@ -123,6 +162,13 @@
     let headers = [];
     let rowIds = [];
     let activities = [];
+    let shiftReports = [];
+    let employeeUsers = AOIAccountStore.getAll().filter(account => account.role === 'employee');
+    let selectedShiftReportId = null;
+    let selectedEmployeeEmail = null;
+    let sampleMonitorSheets = [];
+    let sampleMonitorHeaders = [];
+    let sampleMonitorSettings = { visible: [], labels: {} };
     let employeePermissions = {};
     let currentPage = 1;
     let editingRowIndex = null;
@@ -139,6 +185,8 @@
       rowIds = Array.isArray(storedRowIds) && storedRowIds.length === rows.length ? storedRowIds : rows.map((_, index) => `aoi-row-${index}`);
       const storedActivities = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]');
       activities = Array.isArray(storedActivities) ? storedActivities : [];
+      const storedShiftReports = JSON.parse(localStorage.getItem(SHIFT_REPORTS_KEY) || '[]');
+      shiftReports = Array.isArray(storedShiftReports) ? storedShiftReports : [];
       try {
         const storedPermissions = JSON.parse(localStorage.getItem(PERMISSIONS_KEY) || '{}');
         employeePermissions = storedPermissions && typeof storedPermissions === 'object' && !Array.isArray(storedPermissions) ? storedPermissions : {};
@@ -151,6 +199,7 @@
       headers = [];
       rowIds = [];
       activities = [];
+      shiftReports = [];
     }
 
     const rowBody = document.getElementById('rowBody');
@@ -235,6 +284,223 @@
       document.getElementById('activityEmpty').classList.toggle('hidden', activities.length > 0);
       document.getElementById('activityBody').innerHTML = activities.map(activity => `<tr class="border-t border-[#f0efec]"><td class="px-4 py-3 font-bold">${escapeHtml(activity.employee)}</td><td class="max-w-[520px] px-3 py-3 text-[#555]">${escapeHtml(activity.description)}</td><td class="whitespace-nowrap px-3 py-3 text-[#888]">${escapeHtml(activity.recorded)}</td><td class="whitespace-nowrap px-4 py-3"><button data-edit-activity="${escapeHtml(activity.id)}" class="rounded px-2 py-1.5 text-[9px] font-bold text-[#9e4145] hover:bg-[#fff4f2]">Edit</button><button data-delete-activity="${escapeHtml(activity.id)}" class="rounded px-2 py-1.5 text-[9px] font-bold text-[#777] hover:bg-gray-100">Delete</button></td></tr>`).join('');
     }
+
+    function renderShiftReports() {
+      const query = document.getElementById('shiftReportSearch').value.trim().toLowerCase();
+      const sorted = [...shiftReports].sort((left, right) => new Date(right.updatedAt || right.createdAt || 0) - new Date(left.updatedAt || left.createdAt || 0));
+      const reportEmails = new Set(sorted.map(report => (report.email || '').toLowerCase()));
+      const reports = sorted.filter(report => `${report.employee || ''} ${report.email || ''} ${report.shiftDate || ''}`.toLowerCase().includes(query));
+      const roster = employeeUsers.filter(user => !reportEmails.has(user.email.toLowerCase()) && `${user.name} ${user.email} ${user.active ? 'active' : 'disabled'}`.toLowerCase().includes(query));
+      const hasSelection = reports.some(report => report.id === selectedShiftReportId)
+        || roster.some(user => user.email === selectedEmployeeEmail);
+      if (!hasSelection) {
+        selectedShiftReportId = reports[0]?.id || null;
+        selectedEmployeeEmail = selectedShiftReportId ? null : roster[0]?.email || null;
+      }
+      document.getElementById('shiftReportCount').textContent = `${employeeUsers.length} employee${employeeUsers.length === 1 ? '' : 's'} · ${shiftReports.length} report${shiftReports.length === 1 ? '' : 's'}`;
+      const inboxEntries = [
+        ...reports.map(report => ({ type: 'report', report })),
+        ...roster.map(user => ({ type: 'employee', user }))
+      ];
+      document.getElementById('shiftReportInboxEmpty').classList.toggle('hidden', inboxEntries.length > 0);
+      document.getElementById('shiftReportInboxEmpty').textContent = employeeUsers.length || shiftReports.length ? 'No employees or reports match this search.' : 'No employee accounts are available.';
+      document.getElementById('shiftReportList').innerHTML = inboxEntries.map(entry => {
+        if (entry.type === 'employee') {
+          const user = entry.user;
+          const active = !selectedShiftReportId && selectedEmployeeEmail === user.email;
+          return `<button type="button" data-employee-email="${escapeHtml(user.email)}" class="w-full rounded border px-3 py-3 text-left ${active ? 'border-[#e2a6aa] bg-[#fff1f2]' : 'border-transparent hover:border-[#eceae6] hover:bg-[#fbfbfa]'}"><span class="flex items-start justify-between gap-2"><span class="truncate text-[10px] font-extrabold">${escapeHtml(user.name)}</span><span class="shrink-0 text-[8px] ${user.active ? 'text-[#55805d]' : 'text-[#888]'}">${user.active ? 'Active' : 'Disabled'}</span></span><span class="mt-1 block truncate text-[9px] text-[#666]">${escapeHtml(user.email)}</span><span class="mt-1 block text-[8px] text-[#999]">No reports yet</span></button>`;
+        }
+        const report = entry.report;
+        const lastMessage = report.messages?.[report.messages.length - 1];
+        const active = report.id === selectedShiftReportId;
+        return `<button type="button" data-shift-report-id="${escapeHtml(report.id)}" class="w-full rounded border px-3 py-3 text-left ${active ? 'border-[#e2a6aa] bg-[#fff1f2]' : 'border-transparent hover:border-[#eceae6] hover:bg-[#fbfbfa]'}"><span class="flex items-start justify-between gap-2"><span class="truncate text-[10px] font-extrabold">${escapeHtml(report.employee || 'Employee')}</span><time class="shrink-0 text-[8px] text-[#888]">${escapeHtml(report.shiftDate || '')}</time></span><span class="mt-1 block truncate text-[9px] text-[#666]">${escapeHtml(lastMessage?.text || 'Daily shift report')}</span><span class="mt-1 block text-[8px] text-[#999]">${report.messages?.length || 0} message${report.messages?.length === 1 ? '' : 's'}</span></button>`;
+      }).join('');
+      const selected = shiftReports.find(report => report.id === selectedShiftReportId);
+      const selectedUser = employeeUsers.find(user => user.email === selectedEmployeeEmail);
+      const thread = document.getElementById('shiftReportThread');
+      document.getElementById('shiftReportThreadTitle').textContent = selected ? `${selected.employee || 'Employee'} · ${selected.shiftDate || 'Shift report'}` : selectedUser?.name || 'Select an employee';
+      document.getElementById('shiftReportThreadSubtitle').textContent = selected ? `${selected.email || ''} · Daily shift handoff` : selectedUser ? `${selectedUser.email} · ${selectedUser.active ? 'Active account' : 'Disabled account'}` : 'Employee reports and replies appear here.';
+      thread.innerHTML = selected?.messages?.length ? selected.messages.map(message => {
+        const fromSubadmin = message.sender === 'sub-admin';
+        return `<article class="max-w-[85%] rounded border ${fromSubadmin ? 'self-end border-[#e9b8bc] bg-[#fff1f2]' : 'self-start border-[#e4e1dc] bg-white'} px-3 py-2.5"><div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1"><span class="text-[9px] font-extrabold">${escapeHtml(message.senderName || (fromSubadmin ? 'Sub-admin' : selected.employee || 'Employee'))}</span><time class="text-[8px] text-[#888]">${escapeHtml(message.recorded || '')}</time></div><p class="mt-1 whitespace-pre-wrap break-words text-[10px] leading-relaxed text-[#333]">${escapeHtml(message.text)}</p></article>`;
+      }).join('') : selectedUser
+        ? `<p class="m-auto max-w-[340px] text-center text-[10px] leading-relaxed text-[#888]">${escapeHtml(selectedUser.name)} has not sent a shift report yet.</p>`
+        : '<p class="m-auto max-w-[340px] text-center text-[10px] leading-relaxed text-[#888]">Select a report from the inbox to review the employee’s shift update.</p>';
+      thread.scrollTop = thread.scrollHeight;
+      document.getElementById('shiftReportReply').disabled = !selected;
+      document.getElementById('sendShiftReportReply').disabled = !selected;
+    }
+
+    function loadSampleMonitoringSheets() {
+      let workbook = [];
+      try {
+        const stored = JSON.parse(localStorage.getItem(WORKBOOK_KEY) || '[]');
+        workbook = Array.isArray(stored) ? stored : [];
+        const fileName = localStorage.getItem(WORKBOOK_NAME_KEY) || '';
+        const importedAsCsi = /csi/i.test(fileName);
+        sampleMonitorSheets = workbook.filter(sheet => importedAsCsi || /csi/i.test(sheet.name || ''));
+        if (!sampleMonitorSheets.length && !workbook.length) {
+          const storedRows = JSON.parse(localStorage.getItem(ROW_KEY) || '[]');
+          const activeSheet = localStorage.getItem(ACTIVE_SHEET_KEY) || '';
+          if (Array.isArray(storedRows) && storedRows.length && /csi/i.test(activeSheet)) {
+            const fallbackHeaders = JSON.parse(localStorage.getItem(HEADER_KEY) || 'null') || Object.keys(storedRows[0]);
+            const storedIds = JSON.parse(localStorage.getItem(ROW_IDS_KEY) || 'null') || storedRows.map((_, index) => `csi-row-${index}`);
+            sampleMonitorSheets = [{ name: activeSheet, headers: fallbackHeaders, rows: storedRows, rowIds: storedIds }];
+          }
+        }
+      } catch (error) {
+        console.warn('Could not load CSI rows for Sample Room Monitoring.', error);
+        sampleMonitorSheets = [];
+      }
+
+      sampleMonitorHeaders = [...new Set(sampleMonitorSheets.flatMap(sheet => Array.isArray(sheet.headers) ? sheet.headers : Object.keys(sheet.rows?.[0] || {})))];
+      try {
+        const storedSettings = JSON.parse(localStorage.getItem(SAMPLE_MONITOR_COLUMNS_KEY) || 'null');
+        sampleMonitorSettings = storedSettings && typeof storedSettings === 'object'
+          ? { visible: Array.isArray(storedSettings.visible) ? storedSettings.visible : [], labels: storedSettings.labels && typeof storedSettings.labels === 'object' ? storedSettings.labels : {} }
+          : { visible: [], labels: {} };
+      } catch (error) {
+        sampleMonitorSettings = { visible: [], labels: {} };
+      }
+      if (!sampleMonitorSettings.visible.length && sampleMonitorHeaders.length && !localStorage.getItem(SAMPLE_MONITOR_COLUMNS_KEY)) {
+        sampleMonitorSettings.visible = [...sampleMonitorHeaders];
+      }
+      sampleMonitorSettings.visible = sampleMonitorSettings.visible.filter(header => sampleMonitorHeaders.includes(header));
+      renderSampleMonitoring();
+    }
+
+    function saveSampleMonitorSettings() {
+      localStorage.setItem(SAMPLE_MONITOR_COLUMNS_KEY, JSON.stringify(sampleMonitorSettings));
+      renderSampleMonitoring();
+    }
+
+    function renderSampleMonitoring() {
+      const fileName = localStorage.getItem(WORKBOOK_NAME_KEY) || '';
+      const source = document.getElementById('sampleMonitorSource');
+      const rowsBody = document.getElementById('sampleMonitorRows');
+      const tableHead = document.getElementById('sampleMonitorHead');
+      const query = document.getElementById('sampleMonitorSearch').value.trim().toLowerCase();
+      const settings = sampleMonitorSettings;
+      const visibleHeaders = settings.visible.length ? settings.visible : sampleMonitorHeaders;
+      const allRows = sampleMonitorSheets.flatMap(sheet => (sheet.rows || []).map((record, index) => ({
+        sheetName: sheet.name || 'CSI worksheet',
+        record,
+        rowId: sheet.rowIds?.[index] || `${sheet.name || 'CSI'}-${index}`
+      })));
+      const filtered = allRows.filter(item => `${item.sheetName} ${Object.values(item.record).join(' ')}`.toLowerCase().includes(query));
+      source.textContent = sampleMonitorSheets.length
+        ? `${fileName || 'Imported CSI worksheets'} · ${sampleMonitorSheets.length} CSI worksheet${sampleMonitorSheets.length === 1 ? '' : 's'}`
+        : fileName
+          ? `No CSI worksheet found in ${fileName}. Import a CSI workbook or name a worksheet with “CSI”.`
+          : 'Import a CSI workbook to automatically populate this monitoring list.';
+      document.getElementById('sampleMonitorRowCount').textContent = `${filtered.length.toLocaleString()} row${filtered.length === 1 ? '' : 's'}`;
+      document.getElementById('sampleMonitorHeaderOptions').innerHTML = sampleMonitorHeaders.length
+        ? sampleMonitorHeaders.map((header, index) => {
+          const checked = visibleHeaders.includes(header);
+          const label = settings.labels[header] || header;
+          return `<div class="flex min-w-0 items-center gap-2 rounded border border-[#eceae6] px-3 py-2"><input id="monitorHeader-${index}" type="checkbox" data-monitor-visible="${escapeHtml(header)}" ${checked ? 'checked' : ''} class="h-4 w-4 accent-[#b84e51]" /><label for="monitorHeader-${index}" class="min-w-0 flex-1 truncate text-[9px] font-bold text-[#555]">${escapeHtml(header)}</label><input type="text" data-monitor-label="${escapeHtml(header)}" value="${escapeHtml(label)}" aria-label="Display label for ${escapeHtml(header)}" class="h-8 w-[min(45%,180px)] rounded border border-[#deddda] px-2 text-[9px] outline-none focus:border-[#c95a5f]" /></div>`;
+        }).join('')
+        : '<p class="text-[9px] text-[#888]">Column controls appear when a CSI workbook is imported.</p>';
+      tableHead.innerHTML = sampleMonitorSheets.length
+        ? `<tr class="text-[9px] uppercase tracking-[.7px] text-[#777]"><th class="whitespace-nowrap border-b border-[#eceae6] px-3 py-3">Worksheet</th>${visibleHeaders.map(header => `<th class="whitespace-nowrap border-b border-[#eceae6] px-3 py-3">${escapeHtml(settings.labels[header] || header)}</th>`).join('')}</tr>`
+        : '';
+      rowsBody.innerHTML = filtered.map(item => `<tr class="border-t border-[#f0efec] hover:bg-[#fcfbf9]"><td class="whitespace-nowrap px-3 py-2.5 font-bold text-[#555]">${escapeHtml(item.sheetName)}</td>${visibleHeaders.map(header => `<td class="max-w-[320px] px-3 py-2.5 text-[#555]">${escapeHtml(item.record[header] ?? '')}</td>`).join('')}</tr>`).join('');
+      document.getElementById('sampleMonitorEmpty').classList.toggle('hidden', filtered.length > 0);
+      document.getElementById('sampleMonitorEmpty').textContent = allRows.length
+        ? 'No CSI rows match your search.'
+        : 'No CSI rows are available yet. Import the CSI workbook to populate this list.';
+      document.getElementById('forwardFinalCsiBtn').disabled = allRows.length === 0;
+      renderFinalCsiForwardStatus();
+    }
+
+    function renderFinalCsiForwardStatus() {
+      let submission = null;
+      try {
+        submission = JSON.parse(localStorage.getItem(FINAL_CSI_REVIEW_KEY) || 'null');
+      } catch (error) {
+        submission = null;
+      }
+      const status = document.getElementById('finalCsiForwardStatus');
+      if (!submission) {
+        status.textContent = 'No CSI file forwarded for final check.';
+        return;
+      }
+      const label = submission.reviewStatus === 'approved' ? 'Approved' : submission.reviewStatus === 'changes-requested' ? 'Changes requested' : 'Pending Item Checker review';
+      const date = submission.forwardedAt ? new Date(submission.forwardedAt).toLocaleString() : 'Time not recorded';
+      status.textContent = `${submission.fileName || 'CSI workbook'} · ${label} · forwarded ${date}${submission.checkerNote ? ` · Note: ${submission.checkerNote}` : ''}`;
+    }
+
+    function forwardFinalCsi() {
+      const workbook = sampleMonitorSheets.map(sheet => ({
+        name: sheet.name || 'CSI worksheet',
+        headers: Array.isArray(sheet.headers) ? [...sheet.headers] : Object.keys(sheet.rows?.[0] || {}),
+        rows: (sheet.rows || []).map(row => ({ ...row })),
+        rowIds: [...(sheet.rowIds || [])]
+      }));
+      const rowCount = workbook.reduce((total, sheet) => total + sheet.rows.length, 0);
+      if (!rowCount) return;
+      const submission = {
+        id: `final-csi-${Date.now()}`,
+        fileName: localStorage.getItem(WORKBOOK_NAME_KEY) || 'Imported CSI workbook',
+        workbook,
+        rowCount,
+        forwardedBy: sessionStorage.getItem('aoiName') || 'Sub-admin',
+        forwardedEmail: sessionStorage.getItem('aoiEmail') || '',
+        forwardedAt: new Date().toISOString(),
+        reviewStatus: 'pending',
+        checkerNote: '',
+        checkedBy: '',
+        checkedAt: ''
+      };
+      localStorage.setItem(FINAL_CSI_REVIEW_KEY, JSON.stringify(submission));
+      renderFinalCsiForwardStatus();
+      notify('Final CSI workbook forwarded to Item Checker.');
+    }
+
+    function exportSampleMonitorCsv() {
+      const visibleHeaders = sampleMonitorSettings.visible.length ? sampleMonitorSettings.visible : sampleMonitorHeaders;
+      const rows = sampleMonitorSheets.flatMap(sheet => (sheet.rows || []).map((record, index) => ({
+        sheetName: sheet.name || 'CSI worksheet',
+        record,
+        rowId: sheet.rowIds?.[index] || `${sheet.name || 'CSI'}-${index}`
+      })));
+      const filtered = rows.filter(item => {
+        const query = document.getElementById('sampleMonitorSearch').value.trim().toLowerCase();
+        return !query || `${item.sheetName} ${Object.values(item.record).join(' ')}`.toLowerCase().includes(query);
+      });
+      const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+      const headerRow = ['Worksheet', ...visibleHeaders.map(header => sampleMonitorSettings.labels[header] || header)];
+      const bodyRows = filtered.map(item => [item.sheetName, ...visibleHeaders.map(header => item.record[header] ?? '')]);
+      const csv = [headerRow.map(csvCell).join(','), ...bodyRows.map(row => row.map(csvCell).join(','))].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const link = document.createElement('a');
+      const fileName = (localStorage.getItem(WORKBOOK_NAME_KEY) || 'sample-room-monitoring').replace(/\.[^/.]+$/, '');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${fileName || 'sample-room-monitoring'}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    document.getElementById('sampleMonitorSearch').addEventListener('input', renderSampleMonitoring);
+    document.getElementById('sampleMonitorExportBtn').addEventListener('click', exportSampleMonitorCsv);
+    document.getElementById('forwardFinalCsiBtn').addEventListener('click', forwardFinalCsi);
+    document.getElementById('sampleMonitorHeaderOptions').addEventListener('change', event => {
+      const checkbox = event.target.closest('[data-monitor-visible]');
+      if (!checkbox) return;
+      const header = checkbox.dataset.monitorVisible;
+      sampleMonitorSettings.visible = checkbox.checked
+        ? [...new Set([...sampleMonitorSettings.visible, header])]
+        : sampleMonitorSettings.visible.filter(item => item !== header);
+      saveSampleMonitorSettings();
+    });
+    document.getElementById('sampleMonitorHeaderOptions').addEventListener('input', event => {
+      const input = event.target.closest('[data-monitor-label]');
+      if (!input) return;
+      sampleMonitorSettings.labels[input.dataset.monitorLabel] = input.value.trim() || input.dataset.monitorLabel;
+      localStorage.setItem(SAMPLE_MONITOR_COLUMNS_KEY, JSON.stringify(sampleMonitorSettings));
+      const header = document.getElementById('sampleMonitorHead').querySelectorAll('th')[sampleMonitorSettings.visible.indexOf(input.dataset.monitorLabel) + 1];
+      if (header) header.textContent = sampleMonitorSettings.labels[input.dataset.monitorLabel];
+    });
 
     function renderEmployeeAccess() {
       document.getElementById('employeeAccessBody').innerHTML = employeeAccounts.map(employee => `<tr class="border-t border-[#f0efec]"><td class="px-4 py-3 font-bold">${escapeHtml(employee.name)}</td><td class="px-3 py-3 text-[#777]">${escapeHtml(employee.email)}</td><td class="px-4 py-2"><label class="sr-only" for="permission-${escapeHtml(employee.email)}">Row access for ${escapeHtml(employee.name)}</label><select id="permission-${escapeHtml(employee.email)}" data-employee-permission="${escapeHtml(employee.email)}" class="h-8 rounded border border-[#deddda] bg-white px-2 text-[10px] font-semibold outline-none focus:border-[#c95a5f]"><option value="edit" ${employeePermissions[employee.email] !== 'view' ? 'selected' : ''}>Can edit row details</option><option value="view" ${employeePermissions[employee.email] === 'view' ? 'selected' : ''}>View only</option></select></td></tr>`).join('');
@@ -435,6 +701,56 @@
       notify(select.value === 'edit' ? 'Employee can edit imported rows.' : 'Employee is view-only.');
     });
 
+    document.getElementById('shiftReportSearch').addEventListener('input', renderShiftReports);
+    document.getElementById('shiftReportList').addEventListener('click', event => {
+      const button = event.target.closest('[data-shift-report-id]');
+      const employeeButton = event.target.closest('[data-employee-email]');
+      if (button) {
+        selectedShiftReportId = button.dataset.shiftReportId;
+        selectedEmployeeEmail = null;
+      } else if (employeeButton) {
+        selectedShiftReportId = null;
+        selectedEmployeeEmail = employeeButton.dataset.employeeEmail;
+      } else return;
+      renderShiftReports();
+    });
+    document.getElementById('shiftReportReplyForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const report = shiftReports.find(item => item.id === selectedShiftReportId);
+      const text = document.getElementById('shiftReportReply').value.trim();
+      if (!report || !text) return;
+      const timestamp = new Date();
+      report.messages = [...(report.messages || []), { id: `${timestamp.getTime()}-${Math.random().toString(16).slice(2)}`, sender: 'sub-admin', senderName: sessionStorage.getItem('aoiName') || 'Sub-admin', text, timestamp: timestamp.toISOString(), recorded: timestamp.toLocaleString() }];
+      report.updatedAt = timestamp.toISOString();
+      localStorage.setItem(SHIFT_REPORTS_KEY, JSON.stringify(shiftReports));
+      document.getElementById('shiftReportReply').value = '';
+      renderShiftReports();
+    });
+    window.addEventListener('storage', event => {
+      if (event.key === ACCOUNTS_KEY) {
+        employeeUsers = AOIAccountStore.getAll().filter(account => account.role === 'employee');
+        renderShiftReports();
+        renderEmployeeAccess();
+        return;
+      }
+      if (event.key === WORKBOOK_KEY || event.key === WORKBOOK_NAME_KEY || event.key === ROW_KEY) {
+        loadSampleMonitoringSheets();
+        return;
+      }
+      if (event.key === FINAL_CSI_REVIEW_KEY) {
+        renderFinalCsiForwardStatus();
+        return;
+      }
+      if (event.key !== SHIFT_REPORTS_KEY) return;
+      try {
+        const parsed = JSON.parse(event.newValue || '[]');
+        shiftReports = Array.isArray(parsed) ? parsed : [];
+        renderShiftReports();
+      } catch (error) {
+        console.warn('Could not refresh shift reports.', error);
+      }
+    });
+
     document.getElementById('addRowBtn').addEventListener('click', () => openRowEditor());
     document.getElementById('manageHeadersBtn').addEventListener('click', openHeadersDialog);
     document.getElementById('addActivityBtn').addEventListener('click', () => openActivityEditor());
@@ -452,13 +768,19 @@
       const showWorkbook = view === 'workbook';
       const showActivity = view === 'activity';
       const showEmployees = view === 'employees';
+      const showReports = view === 'reports';
+      const showSampleMonitoring = view === 'sample-monitoring';
       document.getElementById('workbookView').classList.toggle('hidden', !showWorkbook);
       document.getElementById('activityView').classList.toggle('hidden', !showActivity);
       document.getElementById('employeeAccessView').classList.toggle('hidden', !showEmployees);
+      document.getElementById('shiftReportsView').classList.toggle('hidden', !showReports);
+      document.getElementById('sampleMonitoringView').classList.toggle('hidden', !showSampleMonitoring);
       document.getElementById('workbookActions').classList.toggle('hidden', !showWorkbook);
       document.getElementById('dashboardStats').classList.toggle('hidden', !showWorkbook);
-      document.getElementById('viewTitle').textContent = showActivity ? 'Employee activity' : showEmployees ? 'Employee access' : 'Imported workbook';
-      document.getElementById('viewSubtitle').textContent = showActivity ? 'Manage activity records and review changes made to workbook rows.' : showEmployees ? 'Set which employee accounts can edit imported row details.' : 'Edit imported rows and column headers shared with the dashboards.';
+      document.getElementById('viewTitle').textContent = showActivity ? 'Employee activity' : showEmployees ? 'Employee access' : showReports ? 'Daily shift reports' : showSampleMonitoring ? 'Sample Room Monitoring' : 'Imported workbook';
+      document.getElementById('viewSubtitle').textContent = showActivity ? 'Manage activity records and review changes made to workbook rows.' : showEmployees ? 'Set which employee accounts can edit imported row details.' : showReports ? 'Review employee handoffs and reply to their daily reports.' : showSampleMonitoring ? 'Review CSI workbook rows and configure their display headers.' : 'Edit imported rows and column headers shared with the dashboards.';
+      if (showReports) renderShiftReports();
+      if (showSampleMonitoring) loadSampleMonitoringSheets();
       document.body.classList.remove('menu-open');
     }));
 

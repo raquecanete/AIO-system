@@ -1419,9 +1419,11 @@
         const DASHBOARD_HEADERS_KEY = 'aoi_imported_headers';
         const DASHBOARD_ROW_IDS_KEY = 'aoi_imported_row_ids';
         const DASHBOARD_WORKBOOK_KEY = 'aoi_imported_workbook';
+        const DASHBOARD_WORKBOOK_NAME_KEY = 'aoi_imported_workbook_name';
         const DASHBOARD_ACTIVE_SHEET_KEY = 'aoi_active_sheet_name';
         const ACTIVITY_STORAGE_KEY = 'aoi_employee_activity';
         let workbookImportId = '';
+        let currentWorkbookFileName = '';
         const workbookRowIds = new Map();
 
         function createUniqueHeaders(sourceHeaders, columnCount) {
@@ -1495,6 +1497,7 @@
                     JSON.stringify(rowIds)
                 );
                 localStorage.setItem(DASHBOARD_ACTIVE_SHEET_KEY, currentSheetName);
+                localStorage.setItem(DASHBOARD_WORKBOOK_NAME_KEY, currentWorkbookFileName);
                 localStorage.setItem(
                     DASHBOARD_WORKBOOK_KEY,
                     JSON.stringify(workbook.SheetNames.map(getDashboardSheet))
@@ -1681,6 +1684,8 @@
 
 
             /* File information */
+
+            currentWorkbookFileName = file.name;
 
             fileName.textContent =
                 file.name;

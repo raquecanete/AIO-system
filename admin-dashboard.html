@@ -353,9 +353,6 @@
         <button data-page="Accounts" class="nav-btn w-full h-[35px] rounded-[4px] flex items-center gap-3 px-4 text-[12px] font-bold hover:bg-gray-50">
           <span class="icon">♟</span><span>Accounts</span>
         </button>
-        <button data-page="Reports" class="nav-btn w-full h-[35px] rounded-[4px] flex items-center gap-3 px-4 text-[12px] font-bold hover:bg-gray-50">
-          <span class="icon">▣</span><span>Reports</span>
-        </button>
       </nav>
 
       <div class="mt-auto px-3 pb-4 space-y-3">
@@ -411,121 +408,50 @@
             <p id="pageSubtitle" class="text-[12px] mt-0.5">Monitor and Manage Apparel Records</p>
           </div>
 
-          <!-- KPI ROW -->
+          <!-- WORKBOOK SUMMARY -->
           <div class="grid grid-cols-2 gap-3">
-            <div class="h-[88px] border border-gray-300 rounded-lg shadow-sm px-3 py-2.5">
-              <div class="flex items-center gap-2 text-[11px] font-extrabold">
-                <span class="w-7 h-7 rounded-md border border-gray-200 shadow-sm flex items-center justify-center text-base">👕</span>
-                <button id="brandSelect" class="flex items-center gap-1">PUMA <span class="text-[9px]">▼</span></button>
-              </div>
-              <div id="brandTotalDesigns" class="mt-1 text-[16px]">892</div>
-              <div class="text-[9px] mt-0.5">Total Designs this Month</div>
-            </div>
-
-            <div class="h-[88px] border border-gray-300 rounded-lg shadow-sm px-3 py-2.5">
-              <div class="flex items-center gap-2 text-[11px] font-extrabold">
-                <span class="w-7 h-7 rounded-md border border-gray-200 shadow-sm flex items-center justify-center text-base">🛠</span>
-                TOTAL DESIGNS
-              </div>
-              <div id="grandTotalDesigns" class="mt-1 text-[16px]">3,234</div>
-              <div class="text-[9px] mt-0.5">Overall Total Designs this Month</div>
-            </div>
+            <article class="min-h-[88px] border border-gray-300 rounded-lg bg-white shadow-sm px-3 py-2.5">
+              <div class="flex items-center gap-2 text-[11px] font-extrabold"><span class="w-7 h-7 rounded-md border border-gray-200 flex items-center justify-center text-base">▦</span>Imported rows</div>
+              <div id="overviewTotalRows" class="mt-1 text-[20px] font-extrabold">0</div>
+              <div class="text-[9px] mt-0.5 text-gray-500">Across all imported worksheets</div>
+            </article>
+            <article class="min-h-[88px] border border-gray-300 rounded-lg bg-white shadow-sm px-3 py-2.5">
+              <div class="flex items-center gap-2 text-[11px] font-extrabold"><span class="w-7 h-7 rounded-md border border-gray-200 flex items-center justify-center text-base">◫</span>Worksheets</div>
+              <div id="overviewSheetCount" class="mt-1 text-[20px] font-extrabold">0</div>
+              <div id="overviewBrandSummary" class="text-[9px] mt-0.5 text-gray-500">0 brands in imported data</div>
+            </article>
           </div>
 
           <!-- MIDDLE -->
           <div class="grid grid-cols-[1.65fr_1fr] gap-3 mt-3">
             <!-- CHART -->
-            <div class="h-[198px] border border-gray-300 rounded-lg shadow-sm p-3">
+            <div class="min-h-[198px] border border-gray-300 rounded-lg bg-white shadow-sm p-3">
               <div class="flex items-center justify-between">
-                <h2 class="text-[11px] font-extrabold">Monthly Reports</h2>
-                <select class="text-[10px] font-bold border border-gray-200 rounded-full px-3 py-1 outline-none">
-                  <option>Sept.</option><option>Aug.</option><option>July</option>
-                </select>
+                <h2 class="text-[11px] font-extrabold">Rows by worksheet</h2>
+                <button type="button" data-overview-page="CSI Masterlist" class="text-[9px] font-bold text-gray-500 hover:text-black">View masterlist</button>
               </div>
-              <div class="text-[9px] mt-2">Total designs created this month</div>
-              <div class="text-[11px] font-extrabold mt-2">3,234</div>
-
-              <div class="mt-1 h-[122px]">
-                <svg viewBox="0 0 620 145" preserveAspectRatio="none" class="w-full h-full">
-                  <defs>
-                    <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stop-color="#ffdfe2" stop-opacity=".95"/>
-                      <stop offset="100%" stop-color="#fff" stop-opacity=".15"/>
-                    </linearGradient>
-                  </defs>
-                  <g class="chart-grid">
-                    <line x1="0" y1="28" x2="620" y2="28"></line>
-                    <line x1="0" y1="57" x2="620" y2="57"></line>
-                    <line x1="0" y1="86" x2="620" y2="86"></line>
-                    <line x1="0" y1="115" x2="620" y2="115"></line>
-                  </g>
-                  <path class="chart-area" d="M0,94 C25,91 25,83 53,84 C78,85 82,92 110,87 C135,82 136,72 163,73 C190,75 192,64 220,68 C248,72 247,79 274,72 C303,64 301,54 329,52 C356,50 365,61 386,57 C413,52 410,37 439,43 C464,48 464,60 493,52 C520,44 518,27 548,33 C573,37 579,47 593,42 C606,37 610,29 620,25 L620,145 L0,145 Z"></path>
-                  <path class="chart-line" d="M0,94 C25,91 25,83 53,84 C78,85 82,92 110,87 C135,82 136,72 163,73 C190,75 192,64 220,68 C248,72 247,79 274,72 C303,64 301,54 329,52 C356,50 365,61 386,57 C413,52 410,37 439,43 C464,48 464,60 493,52 C520,44 518,27 548,33 C573,37 579,47 593,42 C606,37 610,29 620,25"></path>
-                  <g>
-                    <circle class="chart-dot" cx="0" cy="94" r="3"></circle>
-                    <circle class="chart-dot" cx="53" cy="84" r="3"></circle>
-                    <circle class="chart-dot" cx="110" cy="87" r="3"></circle>
-                    <circle class="chart-dot" cx="163" cy="73" r="3"></circle>
-                    <circle class="chart-dot" cx="220" cy="68" r="3"></circle>
-                    <circle class="chart-dot" cx="274" cy="72" r="3"></circle>
-                    <circle class="chart-dot" cx="329" cy="52" r="3"></circle>
-                    <circle class="chart-dot" cx="386" cy="57" r="3"></circle>
-                    <circle class="chart-dot" cx="439" cy="43" r="3"></circle>
-                    <circle class="chart-dot" cx="493" cy="52" r="3"></circle>
-                    <circle class="chart-dot" cx="548" cy="33" r="3"></circle>
-                    <circle class="chart-dot" cx="593" cy="42" r="3"></circle>
-                    <circle class="chart-dot" cx="620" cy="25" r="3"></circle>
-                  </g>
-                </svg>
-              </div>
-              <div class="flex justify-between px-1 text-[7px] text-gray-400 mt-[-5px]">
-                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
-              </div>
+              <p id="overviewWorkbookCaption" class="text-[9px] mt-1 text-gray-500">Row totals from the imported workbook</p>
+              <div id="overviewWorksheetBreakdown" class="mt-3 max-h-[145px] space-y-2 overflow-y-auto"></div>
             </div>
 
             <!-- RIGHT CARDS -->
             <div class="space-y-3">
               <!-- Recent Activities -->
-              <div class="h-[89px] border border-gray-300 rounded-lg shadow-sm p-2.5 overflow-hidden">
+              <div class="min-h-[89px] border border-gray-300 rounded-lg bg-white shadow-sm p-2.5">
                 <div class="flex items-center justify-between mb-1.5">
                   <h2 class="text-[11px] font-extrabold">Recent Activities</h2>
-                  <button class="text-[8px] text-gray-500 hover:text-black">View all</button>
+                  <button type="button" data-overview-page="Activity" class="text-[8px] text-gray-500 hover:text-black">View all</button>
                 </div>
-
-                <div class="space-y-1">
-                  <div class="activity bg-[#fde3e5] border border-[#ffabb2] rounded-[3px] h-[25px] px-2 flex items-center gap-2 text-[8px] leading-none">
-                    <span class="w-[19px] h-[19px] shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-[10px]">👩🏻</span>
-                    <span class="truncate"><b>Raque</b> recently visited the PUMA layouts</span>
-                    <span class="ml-auto shrink-0 text-[7px] text-gray-500">Now</span>
-                  </div>
-
-                  <div class="activity bg-[#fde3e5] border border-[#ffabb2] rounded-[3px] h-[25px] px-2 flex items-center gap-2 text-[8px] leading-none">
-                    <span class="w-[19px] h-[19px] shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-[10px]">👩🏻</span>
-                    <span class="truncate"><b>Marka</b> recently visited the PUMA layouts</span>
-                    <span class="ml-auto shrink-0 text-[7px] text-gray-500">2m</span>
-                  </div>
-                </div>
+                <div id="overviewActivityList" class="space-y-1"></div>
               </div>
 
               <!-- Accounts -->
-              <div class="h-[89px] border border-gray-300 rounded-lg shadow-sm p-2.5 overflow-hidden">
+              <div class="min-h-[89px] border border-gray-300 rounded-lg bg-white shadow-sm p-2.5">
                 <div class="flex items-center justify-between mb-1.5">
                   <h2 class="text-[11px] font-extrabold">Accounts</h2>
-                  <button class="text-[8px] text-gray-500 hover:text-black">Manage</button>
+                  <button type="button" data-overview-page="Accounts" class="text-[8px] text-gray-500 hover:text-black">Manage</button>
                 </div>
-
-                <div class="space-y-1">
-                  <div class="bg-[#fde3e5] border border-[#ffabb2] rounded-[3px] h-[25px] px-2 flex items-center text-[8px] leading-none">
-                    <span class="w-[19px] h-[19px] shrink-0 rounded-full bg-white/70 flex items-center justify-center mr-2">+</span>
-                    <span class="truncate">You created an account for <b>Raque</b> as Employee</span>
-                  </div>
-
-                  <div class="bg-[#fde3e5] border border-[#ffabb2] rounded-[3px] h-[25px] px-2 flex items-center gap-2 text-[8px] leading-none">
-                    <span class="w-[19px] h-[19px] shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-[10px]">👩🏻</span>
-                    <span class="truncate"><b>Raque Canete</b> <span class="text-gray-500">(Admin)</span></span>
-                    <span class="ml-auto shrink-0 px-1.5 py-0.5 rounded-full bg-white/70 text-[7px] font-bold">Active</span>
-                  </div>
-                </div>
+                <div id="overviewAccountSummary" class="space-y-1"></div>
               </div>
             </div>
           </div>
@@ -585,16 +511,61 @@
             <nav class="flex items-center justify-between gap-3 border-t border-gray-200 px-4 py-3 text-[10px]" aria-label="Masterlist pagination"><span id="masterlistRange" class="text-gray-500" aria-live="polite"></span><div class="flex items-center gap-2"><button id="masterlistPrevious" class="rounded border border-gray-300 px-3 py-1.5 font-bold disabled:opacity-40" disabled>Previous</button><span id="masterlistPageNumber" class="min-w-[48px] text-center font-bold"></span><button id="masterlistNext" class="rounded border border-gray-300 px-3 py-1.5 font-bold disabled:opacity-40" disabled>Next</button></div></nav>
           </section>
         </div>
+
+        <div id="activityView" class="hidden p-3 sm:p-4 min-w-0 w-full">
+          <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">Audit trail</p><h2 class="text-[20px] font-extrabold">Activity</h2><p class="mt-1 text-[10px] text-gray-500">Successful sign-ins and employee visits to CSI masterlist rows.</p></div>
+            <div class="flex w-full flex-wrap gap-2 sm:w-auto">
+              <select id="activityCategory" class="h-9 rounded border border-gray-300 bg-white px-3 text-[10px] font-semibold outline-none focus:border-gray-500" aria-label="Filter activity category"><option value="all">All activity</option><option value="login">Sign-ins</option><option value="csi_visit">CSI row visits</option></select>
+              <select id="activityDateScope" class="h-9 rounded border border-gray-300 bg-white px-3 text-[10px] font-semibold outline-none focus:border-gray-500" aria-label="Choose date filter"><option value="all">Any date</option><option value="day">By day</option><option value="month">By month</option></select>
+              <input id="activityDay" type="date" class="hidden h-9 rounded border border-gray-300 bg-white px-3 text-[10px] outline-none focus:border-gray-500" aria-label="Choose activity day" />
+              <input id="activityMonth" type="month" class="hidden h-9 rounded border border-gray-300 bg-white px-3 text-[10px] outline-none focus:border-gray-500" aria-label="Choose activity month" />
+              <input id="activitySearch" type="search" placeholder="Search people or rows..." class="h-9 w-full rounded border border-gray-300 px-3 text-[10px] outline-none focus:border-gray-500 sm:w-[220px]" />
+            </div>
+          </div>
+          <div class="mb-4 grid grid-cols-2 gap-3">
+            <article class="rounded border border-gray-300 bg-white px-4 py-3"><div class="text-[10px] font-bold text-gray-500">Successful sign-ins</div><div id="activityLoginCount" class="mt-1 text-[22px] font-extrabold">0</div></article>
+            <article class="rounded border border-gray-300 bg-white px-4 py-3"><div class="text-[10px] font-bold text-gray-500">CSI row visits</div><div id="activityVisitCount" class="mt-1 text-[22px] font-extrabold">0</div></article>
+          </div>
+          <section class="rounded border border-gray-300 bg-white">
+            <div class="overflow-x-auto scrollbar"><table class="w-full min-w-[720px] border-collapse text-left text-[10px]"><thead><tr class="bg-gray-50 text-[9px] uppercase tracking-[.7px] text-gray-500"><th class="px-4 py-3 font-bold">Category</th><th class="px-3 py-3 font-bold">Person</th><th class="px-3 py-3 font-bold">Activity</th><th class="px-4 py-3 font-bold">Date and time</th></tr></thead><tbody id="activityRows"></tbody></table></div>
+            <p id="activityEmpty" class="hidden px-5 py-10 text-center text-[11px] text-gray-500">No activity matches this filter.</p>
+          </section>
+        </div>
+
+        <div id="accountsView" class="hidden p-3 sm:p-4 min-w-0 w-full">
+          <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div><p class="mb-1 text-[10px] font-bold uppercase tracking-[1.5px] text-[#b65a58]">User administration</p><h2 class="text-[20px] font-extrabold">Accounts</h2><p class="mt-1 text-[10px] text-gray-500">Manage names, sign-in emails, roles, passwords, and access.</p></div>
+            <div class="flex flex-wrap items-center gap-3"><span id="accountStatusMessage" class="text-[9px] text-[#55805d]" aria-live="polite"></span><button id="addAccountBtn" type="button" class="flex h-9 items-center gap-2 rounded bg-[#b84e51] px-3 text-[10px] font-bold text-white hover:bg-[#a64347]">+ Add account</button></div>
+          </div>
+          <div class="mb-4 grid grid-cols-2 gap-3">
+            <article class="rounded border border-gray-300 bg-white px-4 py-3"><div class="text-[10px] font-bold text-gray-500">Total accounts</div><div id="accountTotal" class="mt-1 text-[22px] font-extrabold">0</div></article>
+            <article class="rounded border border-gray-300 bg-white px-4 py-3"><div class="text-[10px] font-bold text-gray-500">Active accounts</div><div id="accountActiveTotal" class="mt-1 text-[22px] font-extrabold">0</div></article>
+          </div>
+          <section class="rounded border border-gray-300 bg-white">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 px-4 py-3"><h3 class="text-[11px] font-extrabold">All users</h3><input id="accountSearch" type="search" placeholder="Search name, email, or role..." class="h-8 w-full max-w-[280px] rounded border border-gray-300 px-3 text-[10px] outline-none focus:border-gray-500" /></div>
+            <div class="overflow-x-auto scrollbar"><table class="w-full min-w-[760px] border-collapse text-left text-[10px]"><thead><tr class="bg-gray-50 text-[9px] uppercase tracking-[.7px] text-gray-500"><th class="px-4 py-3 font-bold">Name</th><th class="px-3 py-3 font-bold">Email</th><th class="px-3 py-3 font-bold">Role</th><th class="px-3 py-3 font-bold">Status</th><th class="px-4 py-3 text-right font-bold">Actions</th></tr></thead><tbody id="accountRows"></tbody></table></div>
+            <p id="accountEmpty" class="hidden px-5 py-10 text-center text-[11px] text-gray-500">No accounts match this search.</p>
+            <p class="border-t border-gray-100 px-4 py-3 text-[9px] text-gray-500">Accounts are stored in this browser for the front-end demo.</p>
+          </section>
+        </div>
       </section>
     </main>
   </div>
 
-  <!-- BRAND DROPDOWN -->
-  <div id="brandMenu" class="hidden fixed z-50 bg-white border border-gray-200 shadow-lg rounded-md text-[10px] w-[110px]">
-    <button class="brand-option w-full text-left px-3 py-2 hover:bg-gray-50">PUMA</button>
-    <button class="brand-option w-full text-left px-3 py-2 hover:bg-gray-50">Nike</button>
-    <button class="brand-option w-full text-left px-3 py-2 hover:bg-gray-50">Adidas</button>
-  </div>
+  <dialog id="accountDialog" class="max-h-[90vh] w-[min(520px,calc(100vw-28px))] rounded-md shadow-xl backdrop:bg-black/40">
+    <form id="accountForm" class="p-5">
+      <div class="mb-4 flex items-start justify-between"><div><p class="text-[9px] font-bold uppercase tracking-[1px] text-[#b65a58]">User account</p><h2 id="accountDialogTitle" class="mt-1 text-[15px] font-extrabold">Add account</h2></div><button id="closeAccountDialog" type="button" class="rounded p-1 text-gray-500 hover:bg-gray-100" aria-label="Close account editor">×</button></div>
+      <div class="grid gap-3">
+        <label class="grid gap-1 text-[10px] font-bold">Full name<input id="accountName" required maxlength="80" class="h-9 rounded border border-gray-300 px-3 text-[11px] font-normal outline-none focus:border-gray-500" /></label>
+        <label class="grid gap-1 text-[10px] font-bold">Sign-in email<input id="accountEmail" type="email" required maxlength="160" class="h-9 rounded border border-gray-300 px-3 text-[11px] font-normal outline-none focus:border-gray-500" /></label>
+        <label class="grid gap-1 text-[10px] font-bold">Password<input id="accountPassword" type="password" minlength="6" autocomplete="new-password" class="h-9 rounded border border-gray-300 px-3 text-[11px] font-normal outline-none focus:border-gray-500" /><span id="accountPasswordHint" class="text-[9px] font-normal text-gray-500">Required for new accounts.</span></label>
+        <div class="grid grid-cols-2 gap-3"><label class="grid gap-1 text-[10px] font-bold">Role<select id="accountRole" class="h-9 rounded border border-gray-300 bg-white px-3 text-[10px] outline-none focus:border-gray-500"><option value="admin">Admin</option><option value="employee">Employee</option><option value="sub-admin">Sub-admin</option><option value="item-checker">Item Checker</option></select></label><label class="grid gap-1 text-[10px] font-bold">Access<select id="accountStatus" class="h-9 rounded border border-gray-300 bg-white px-3 text-[10px] outline-none focus:border-gray-500"><option value="true">Active</option><option value="false">Disabled</option></select></label></div>
+      </div>
+      <p id="accountFormError" class="mt-3 hidden text-[10px] text-red-600" role="alert"></p>
+      <div class="mt-5 flex justify-end gap-2 border-t border-gray-200 pt-4"><button id="cancelAccountDialog" type="button" class="rounded border border-gray-300 px-3 py-2 text-[10px] font-bold">Cancel</button><button type="submit" class="rounded bg-[#b84e51] px-4 py-2 text-[10px] font-bold text-white">Save account</button></div>
+    </form>
+  </dialog>
 
   <dialog id="adminRowDetails" class="max-h-[88vh] w-[min(720px,calc(100vw-28px))] rounded-md shadow-xl backdrop:bg-black/40">
     <div class="flex items-start justify-between border-b border-gray-200 p-5"><div><p class="text-[9px] font-bold uppercase tracking-[1px] text-[#b65a58]">Imported catalog row</p><h2 id="adminRowTitle" class="mt-1 text-[15px] font-extrabold">Row details</h2><p id="adminRowSubtitle" class="mt-1 text-[10px] text-gray-500"></p></div><button id="closeAdminRowDetails" class="rounded p-1 text-gray-500 hover:bg-gray-100" type="button" aria-label="Close row details">×</button></div>
@@ -602,6 +573,7 @@
     <div class="border-t border-gray-200 px-5 py-3 text-right"><button id="closeAdminRowDetailsFooter" class="rounded border border-gray-300 px-3 py-2 text-[10px] font-bold" type="button">Close</button></div>
   </dialog>
 
+  <script src="accounts.js"></script>
   <script>
 
     /* ==========================================
@@ -621,12 +593,17 @@
       'aoi_active_sheet_name';
     const ACTIVITY_STORAGE_KEY =
       'aoi_employee_activity';
+    const LOGIN_ACTIVITY_KEY =
+      'aoi_login_activity';
 
 
     let designs = [];
     let designHeaders = [];
     let designRowIds = [];
     let activityEntries = [];
+    let loginEntries = [];
+    let managedAccounts = AOIAccountStore.getAll();
+    let editingAccountId = null;
     let workbookSheets = [];
     let activeSheetName = '';
 
@@ -672,6 +649,8 @@
             : designs.map((_, index) => `aoi-row-${index}`);
           const storedActivities = JSON.parse(localStorage.getItem(ACTIVITY_STORAGE_KEY) || '[]');
           activityEntries = Array.isArray(storedActivities) ? storedActivities : [];
+          const storedLogins = JSON.parse(localStorage.getItem(LOGIN_ACTIVITY_KEY) || '[]');
+          loginEntries = Array.isArray(storedLogins) ? storedLogins : [];
           const storedWorkbook = JSON.parse(localStorage.getItem(DASHBOARD_WORKBOOK_KEY) || '[]');
           workbookSheets = Array.isArray(storedWorkbook) ? storedWorkbook : [];
           activeSheetName = localStorage.getItem(DASHBOARD_ACTIVE_SHEET_KEY) || '';
@@ -694,6 +673,17 @@
         rows: designs,
         rowIds: designRowIds
       }];
+    }
+
+    if (!designs.length && workbookSheets.length) {
+      const selectedSheet = workbookSheets.find(sheet => sheet.name === activeSheetName) || workbookSheets[0];
+      designs = Array.isArray(selectedSheet.rows) ? selectedSheet.rows : [];
+      designHeaders = Array.isArray(selectedSheet.headers) ? selectedSheet.headers.map(String) : Object.keys(designs[0] || {});
+      designRowIds = Array.isArray(selectedSheet.rowIds) && selectedSheet.rowIds.length === designs.length
+        ? selectedSheet.rowIds
+        : designs.map((_, index) => `${selectedSheet.name || 'sheet'}-${index}`);
+      activeSheetName = selectedSheet.name || 'Imported data';
+      usingImportedData = true;
     }
 
 
@@ -806,6 +796,251 @@
       return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
     }
 
+    function renderOverview() {
+      const totalRows = workbookSheets.reduce((total, sheet) => total + (sheet.rows?.length || 0), 0);
+      const brands = new Set();
+      workbookSheets.forEach(sheet => {
+        const headers = Array.isArray(sheet.headers) ? sheet.headers : Object.keys(sheet.rows?.[0] || {});
+        const brandHeader = headers.find(header => header.toLowerCase().replace(/[^a-z0-9]/g, '').includes('brand'));
+        if (!brandHeader) return;
+        (sheet.rows || []).forEach(record => {
+          const brand = String(record[brandHeader] ?? '').trim();
+          if (brand) brands.add(brand);
+        });
+      });
+      document.getElementById('overviewTotalRows').textContent = totalRows.toLocaleString();
+      document.getElementById('overviewSheetCount').textContent = workbookSheets.length.toLocaleString();
+      document.getElementById('overviewBrandSummary').textContent = `${brands.size.toLocaleString()} brand${brands.size === 1 ? '' : 's'} in imported data`;
+      document.getElementById('overviewWorkbookCaption').textContent = totalRows
+        ? `${totalRows.toLocaleString()} imported row${totalRows === 1 ? '' : 's'} across ${workbookSheets.length} worksheet${workbookSheets.length === 1 ? '' : 's'}`
+        : 'Import a workbook to see row totals by worksheet.';
+      const maxRows = Math.max(1, ...workbookSheets.map(sheet => (sheet.rows || []).length));
+      document.getElementById('overviewWorksheetBreakdown').innerHTML = workbookSheets.length
+        ? workbookSheets.map(sheet => {
+          const rowCount = (sheet.rows || []).length;
+          const width = Math.round(rowCount / maxRows * 100);
+          return `<div class="grid grid-cols-[minmax(0,1fr)_34px] items-center gap-x-3 gap-y-1"><div class="truncate text-[9px] font-semibold" title="${escapeHtml(sheet.name || 'Imported sheet')}">${escapeHtml(sheet.name || 'Imported sheet')}</div><div class="text-right text-[9px] font-bold">${rowCount.toLocaleString()}</div><div class="col-span-2 h-1.5 overflow-hidden rounded bg-gray-100"><div class="h-full rounded bg-[#e8999e]" style="width:${width}%"></div></div></div>`;
+        }).join('')
+        : '<p class="py-5 text-center text-[10px] text-gray-500">No imported worksheets.</p>';
+
+      const recentEntries = [
+        ...activityEntries.map(entry => ({ ...entry, overviewType: 'activity' })),
+        ...loginEntries.map(entry => ({ ...entry, overviewType: 'login' }))
+      ].sort((left, right) => new Date(right.timestamp || right.recorded || 0) - new Date(left.timestamp || left.recorded || 0)).slice(0, 2);
+      document.getElementById('overviewActivityList').innerHTML = recentEntries.length
+        ? recentEntries.map(entry => {
+          const person = entry.employee || entry.name || 'User';
+          const detail = entry.overviewType === 'login'
+            ? `${entry.role || 'User'} signed in`
+            : entry.description || `Viewed ${entry.rowName || 'a CSI row'}`;
+          return `<div class="min-h-[25px] rounded-[3px] border border-[#ffabb2] bg-[#fde3e5] px-2 py-1.5 text-[8px] leading-relaxed"><b>${escapeHtml(person)}</b> ${escapeHtml(detail)}<div class="mt-0.5 text-[7px] text-gray-500">${escapeHtml(entry.recorded || entry.timestamp || 'Time not recorded')}</div></div>`;
+        }).join('')
+        : '<p class="py-2 text-[9px] text-gray-500">No recent activity recorded.</p>';
+
+      const activeAccounts = managedAccounts.filter(account => account.active);
+      document.getElementById('overviewAccountSummary').innerHTML = managedAccounts.length
+        ? `<p class="mb-1 text-[8px] text-gray-500">${activeAccounts.length} active of ${managedAccounts.length} accounts</p>${managedAccounts.slice(0, 2).map(account => { const roleName = account.role === 'item-checker' ? 'Item Checker' : account.role === 'sub-admin' ? 'Sub-admin' : account.role === 'admin' ? 'Admin' : 'Employee'; return `<div class="flex min-h-[25px] items-center gap-2 rounded-[3px] border border-gray-200 bg-gray-50 px-2 text-[8px]"><span class="min-w-0 flex-1 truncate"><b>${escapeHtml(account.name)}</b> <span class="text-gray-500">(${roleName})</span></span><span class="shrink-0 rounded-full bg-white px-1.5 py-0.5 text-[7px] font-bold">${account.active ? 'Active' : 'Disabled'}</span></div>`; }).join('')}`
+        : '<p class="py-2 text-[9px] text-gray-500">No accounts configured.</p>';
+    }
+
+    function renderActivity() {
+      const visits = activityEntries
+        .filter(entry => !Array.isArray(entry.changes) && (entry.type === 'csi_visit' || entry.rowId || entry.rowName))
+        .map(entry => ({ ...entry, category: 'csi_visit' }));
+      const entries = [
+        ...loginEntries.map(entry => ({ ...entry, category: 'login' })),
+        ...visits
+      ].sort((left, right) => new Date(right.timestamp || right.recorded || 0) - new Date(left.timestamp || left.recorded || 0));
+      const category = document.getElementById('activityCategory').value;
+      const dateScope = document.getElementById('activityDateScope').value;
+      const selectedDay = document.getElementById('activityDay').value;
+      const selectedMonth = document.getElementById('activityMonth').value;
+      const query = document.getElementById('activitySearch').value.trim().toLowerCase();
+      const dateFiltered = entries.filter(entry => {
+        if (dateScope === 'all' || (dateScope === 'day' && !selectedDay) || (dateScope === 'month' && !selectedMonth)) return true;
+        const date = new Date(entry.timestamp || entry.recorded || '');
+        if (Number.isNaN(date.getTime())) return false;
+        if (dateScope === 'day') {
+          const [year, month, day] = selectedDay.split('-').map(Number);
+          return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+        }
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}` === selectedMonth;
+      });
+      const filtered = dateFiltered.filter(entry => {
+        const row = [entry.sheetName, entry.rowName, entry.rowBrand].filter(Boolean).join(' ');
+        return (category === 'all' || entry.category === category)
+          && `${entry.employee || entry.name || ''} ${entry.email || ''} ${entry.role || ''} ${entry.description || ''} ${row}`.toLowerCase().includes(query);
+      });
+      document.getElementById('activityLoginCount').textContent = dateFiltered.filter(entry => entry.category === 'login').length.toLocaleString();
+      document.getElementById('activityVisitCount').textContent = dateFiltered.filter(entry => entry.category === 'csi_visit').length.toLocaleString();
+      document.getElementById('activityRows').innerHTML = filtered.map(entry => {
+        const isLogin = entry.category === 'login';
+        const details = isLogin
+          ? `${entry.role || 'User'} signed in${entry.email ? ` · ${entry.email}` : ''}.`
+          : `Viewed ${entry.rowName || 'a CSI row'}${entry.rowBrand ? ` · ${entry.rowBrand}` : ''}${entry.sheetName ? ` · ${entry.sheetName}` : ''}.`;
+        const clickable = !isLogin && (entry.rowId || entry.rowName);
+        return `<tr ${clickable ? `data-activity-id="${escapeHtml(entry.id || '')}" tabindex="0" aria-label="Open CSI row details for ${escapeHtml(entry.rowName || 'catalog row')}"` : ''} class="border-t border-gray-100 ${clickable ? 'cursor-pointer hover:bg-gray-50 focus:bg-gray-50 focus:outline-none' : ''}"><td class="px-4 py-3"><span class="inline-flex rounded border px-2 py-1 text-[9px] font-bold ${isLogin ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-rose-200 bg-rose-50 text-rose-700'}">${isLogin ? 'Sign-in' : 'CSI row visit'}</span></td><td class="px-3 py-3 font-semibold">${escapeHtml(entry.employee || entry.name || 'User')}</td><td class="px-3 py-3 text-gray-600">${escapeHtml(details)}</td><td class="whitespace-nowrap px-4 py-3 text-gray-500">${escapeHtml(entry.recorded || entry.timestamp || 'Time not recorded')}</td></tr>`;
+      }).join('');
+      document.getElementById('activityEmpty').classList.toggle('hidden', filtered.length > 0);
+    }
+
+    document.getElementById('activityCategory').addEventListener('change', renderActivity);
+    document.getElementById('activityDateScope').addEventListener('change', event => {
+      const scope = event.target.value;
+      document.getElementById('activityDay').classList.toggle('hidden', scope !== 'day');
+      document.getElementById('activityMonth').classList.toggle('hidden', scope !== 'month');
+      renderActivity();
+    });
+    document.getElementById('activityDay').addEventListener('input', renderActivity);
+    document.getElementById('activityMonth').addEventListener('input', renderActivity);
+    document.getElementById('activitySearch').addEventListener('input', renderActivity);
+    document.getElementById('activityRows').addEventListener('click', event => {
+      const row = event.target.closest('[data-activity-id]');
+      if (row) openActivityVisit(row.dataset.activityId);
+    });
+    document.getElementById('activityRows').addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const row = event.target.closest('[data-activity-id]');
+      if (!row) return;
+      event.preventDefault();
+      openActivityVisit(row.dataset.activityId);
+    });
+    window.addEventListener('storage', event => {
+      if (event.key === AOIAccountStore.STORAGE_KEY) {
+        managedAccounts = AOIAccountStore.getAll();
+        renderAccounts();
+        renderOverview();
+        return;
+      }
+      if (event.key !== ACTIVITY_STORAGE_KEY && event.key !== LOGIN_ACTIVITY_KEY) return;
+      try {
+        const parsed = JSON.parse(event.newValue || '[]');
+        if (event.key === ACTIVITY_STORAGE_KEY) activityEntries = Array.isArray(parsed) ? parsed : [];
+        if (event.key === LOGIN_ACTIVITY_KEY) loginEntries = Array.isArray(parsed) ? parsed : [];
+        renderActivity();
+        renderOverview();
+      } catch (error) {
+        console.warn('Could not refresh activity data.', error);
+      }
+    });
+
+    const accountRows = document.getElementById('accountRows');
+    const accountSearch = document.getElementById('accountSearch');
+
+    function renderAccounts() {
+      const query = accountSearch.value.trim().toLowerCase();
+      const filtered = managedAccounts.filter(account => `${account.name} ${account.email} ${account.role} ${account.active ? 'active' : 'disabled'}`.toLowerCase().includes(query));
+      document.getElementById('accountTotal').textContent = managedAccounts.length.toLocaleString();
+      document.getElementById('accountActiveTotal').textContent = managedAccounts.filter(account => account.active).length.toLocaleString();
+      accountRows.innerHTML = filtered.length ? filtered.map(account => {
+        const role = account.role === 'item-checker' ? 'Item Checker' : account.role === 'sub-admin' ? 'Sub-admin' : account.role === 'admin' ? 'Admin' : 'Employee';
+        return `<tr class="border-t border-gray-100"><td class="px-4 py-3 font-semibold">${escapeHtml(account.name)}</td><td class="px-3 py-3 text-gray-600">${escapeHtml(account.email)}</td><td class="px-3 py-3">${role}</td><td class="px-3 py-3"><span class="inline-flex rounded border px-2 py-1 text-[9px] font-bold ${account.active ? 'border-green-200 bg-green-50 text-green-700' : 'border-gray-200 bg-gray-100 text-gray-600'}">${account.active ? 'Active' : 'Disabled'}</span></td><td class="px-4 py-3"><div class="flex justify-end gap-2"><button type="button" data-edit-account="${escapeHtml(account.id)}" class="rounded border border-gray-300 px-2.5 py-1.5 text-[9px] font-bold hover:bg-gray-50">Edit</button><button type="button" data-delete-account="${escapeHtml(account.id)}" class="rounded border border-red-200 px-2.5 py-1.5 text-[9px] font-bold text-red-600 hover:bg-red-50">Delete</button></div></td></tr>`;
+      }).join('') : '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">No accounts match this search.</td></tr>';
+      document.getElementById('accountEmpty').classList.add('hidden');
+    }
+
+    function setAccountFormError(text) {
+      const error = document.getElementById('accountFormError');
+      error.textContent = text;
+      error.classList.toggle('hidden', !text);
+    }
+
+    function openAccountEditor(accountId = null) {
+      const account = managedAccounts.find(item => item.id === accountId);
+      editingAccountId = account?.id || null;
+      document.getElementById('accountForm').reset();
+      setAccountFormError('');
+      document.getElementById('accountDialogTitle').textContent = account ? 'Edit account' : 'Add account';
+      document.getElementById('accountName').value = account?.name || '';
+      document.getElementById('accountEmail').value = account?.email || '';
+      document.getElementById('accountPassword').value = '';
+      document.getElementById('accountPassword').required = !account;
+      document.getElementById('accountPassword').placeholder = account ? 'Leave blank to keep current password' : 'At least 6 characters';
+      document.getElementById('accountPasswordHint').textContent = account ? 'Leave blank to keep the current password.' : 'Required for new accounts.';
+      document.getElementById('accountRole').value = account?.role || 'employee';
+      document.getElementById('accountStatus').value = account?.active === false ? 'false' : 'true';
+      document.getElementById('accountDialog').showModal();
+    }
+
+    document.getElementById('addAccountBtn').addEventListener('click', () => openAccountEditor());
+    document.getElementById('closeAccountDialog').addEventListener('click', () => document.getElementById('accountDialog').close());
+    document.getElementById('cancelAccountDialog').addEventListener('click', () => document.getElementById('accountDialog').close());
+    accountSearch.addEventListener('input', renderAccounts);
+    document.getElementById('accountForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const current = managedAccounts.find(account => account.id === editingAccountId);
+      const name = document.getElementById('accountName').value.trim();
+      const email = document.getElementById('accountEmail').value.trim().toLowerCase();
+      const password = document.getElementById('accountPassword').value;
+      const role = document.getElementById('accountRole').value;
+      const active = document.getElementById('accountStatus').value === 'true';
+      if (managedAccounts.some(account => account.email === email && account.id !== editingAccountId)) {
+        setAccountFormError('An account already uses this email address.');
+        return;
+      }
+      if (!current && !password) {
+        setAccountFormError('Enter a password for the new account.');
+        return;
+      }
+      const currentEmail = (sessionStorage.getItem('aoiEmail') || '').toLowerCase();
+      if (current && current.email === currentEmail && (!active || role !== current.role)) {
+        setAccountFormError('You cannot disable or change the role of your signed-in account.');
+        return;
+      }
+      const activeAdminCount = managedAccounts.filter(account => account.active && account.role === 'admin').length;
+      if (current?.active && current.role === 'admin' && (!active || role !== 'admin') && activeAdminCount <= 1) {
+        setAccountFormError('At least one active admin account must remain.');
+        return;
+      }
+      const updatedAccount = {
+        id: current?.id || `account-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        name,
+        email,
+        password: password || current.password,
+        role,
+        active
+      };
+      managedAccounts = current
+        ? managedAccounts.map(account => account.id === current.id ? updatedAccount : account)
+        : [...managedAccounts, updatedAccount];
+      AOIAccountStore.saveAll(managedAccounts);
+      if (current && current.email === currentEmail) {
+        sessionStorage.setItem('aoiEmail', email);
+        sessionStorage.setItem('aoiName', name);
+      }
+      document.getElementById('accountDialog').close();
+      document.getElementById('accountStatusMessage').textContent = current ? 'Account updated.' : 'Account added.';
+      renderAccounts();
+      renderOverview();
+    });
+
+    accountRows.addEventListener('click', event => {
+      const editButton = event.target.closest('[data-edit-account]');
+      if (editButton) {
+        openAccountEditor(editButton.dataset.editAccount);
+        return;
+      }
+      const deleteButton = event.target.closest('[data-delete-account]');
+      if (!deleteButton) return;
+      const account = managedAccounts.find(item => item.id === deleteButton.dataset.deleteAccount);
+      if (!account) return;
+      if (account.email === (sessionStorage.getItem('aoiEmail') || '').toLowerCase()) {
+        document.getElementById('accountStatusMessage').textContent = 'You cannot delete your signed-in account.';
+        return;
+      }
+      const activeAdmins = managedAccounts.filter(item => item.active && item.role === 'admin');
+      if (account.active && account.role === 'admin' && activeAdmins.length <= 1) {
+        document.getElementById('accountStatusMessage').textContent = 'At least one active admin account must remain.';
+        return;
+      }
+      if (!confirm(`Delete the account for ${account.name}?`)) return;
+      managedAccounts = managedAccounts.filter(item => item.id !== account.id);
+      AOIAccountStore.saveAll(managedAccounts);
+      document.getElementById('accountStatusMessage').textContent = 'Account deleted.';
+      renderAccounts();
+      renderOverview();
+    });
+
     function getDesignIdentity(record, index, headers, rowId) {
       const normalizedHeaders = headers.map(header => header.toLowerCase().replace(/[^a-z0-9]/g, ''));
       const nameIndex = normalizedHeaders.findIndex(header => /^(stylename|style|designname|name|catalogname)$/.test(header));
@@ -841,6 +1076,48 @@
       document.getElementById('adminRowVisitors').innerHTML = visits.length ? visits.map(visit => `<div class="flex flex-wrap items-center justify-between gap-2 rounded border border-gray-200 bg-gray-50 px-3 py-2"><span class="text-[10px] font-bold">${escapeHtml(visit.employee || 'Employee')}</span><span class="text-[9px] text-gray-500">${escapeHtml(visit.recorded || 'Time not recorded')}</span></div>`).join('') : '<p class="rounded border border-dashed border-gray-300 px-3 py-3 text-[10px] text-gray-500">No employee has opened this catalog row yet.</p>';
       document.getElementById('adminChangeCount').textContent = `${changes.length} edit${changes.length === 1 ? '' : 's'}`;
       document.getElementById('adminRowChanges').innerHTML = changes.length ? changes.map(change => `<div class="rounded border border-gray-200 bg-gray-50 px-3 py-2"><div class="flex flex-wrap items-center justify-between gap-2"><span class="text-[10px] font-bold">${escapeHtml(change.employee || 'Employee')}</span><span class="text-[9px] text-gray-500">${escapeHtml(change.recorded || 'Time not recorded')}</span></div><div class="mt-2 space-y-1">${change.changes.map(item => `<p class="text-[9px] text-gray-700"><b>${escapeHtml(item.header)}:</b> ${escapeHtml(item.before || '—')} <span class="px-1 text-gray-400">→</span> ${escapeHtml(item.after || '—')}</p>`).join('')}</div></div>`).join('') : '<p class="rounded border border-dashed border-gray-300 px-3 py-3 text-[10px] text-gray-500">No employee edits recorded for this row.</p>';
+      document.getElementById('adminRowDetails').showModal();
+    }
+
+    function openActivityVisit(activityId) {
+      const activity = activityEntries.find(entry => String(entry.id || '') === String(activityId));
+      if (!activity) return;
+      try {
+        const storedWorkbook = JSON.parse(localStorage.getItem(DASHBOARD_WORKBOOK_KEY) || '[]');
+        const storedRows = JSON.parse(localStorage.getItem(DASHBOARD_STORAGE_KEY) || '[]');
+        if (Array.isArray(storedWorkbook) && storedWorkbook.length) {
+          workbookSheets = storedWorkbook;
+        } else if (Array.isArray(storedRows) && storedRows.length) {
+          const headers = JSON.parse(localStorage.getItem(DASHBOARD_HEADERS_KEY) || 'null') || Object.keys(storedRows[0]);
+          const rowIds = JSON.parse(localStorage.getItem(DASHBOARD_ROW_IDS_KEY) || 'null') || storedRows.map((_, index) => `aoi-row-${index}`);
+          workbookSheets = [{ name: localStorage.getItem(DASHBOARD_ACTIVE_SHEET_KEY) || 'Imported data', headers, rows: storedRows, rowIds }];
+        } else {
+          workbookSheets = [];
+        }
+        activeSheetName = localStorage.getItem(DASHBOARD_ACTIVE_SHEET_KEY) || '';
+      } catch (error) {
+        console.warn('Could not refresh workbook data for this visit.', error);
+      }
+      renderMasterlist();
+      const normalize = value => String(value || '').trim().toLowerCase();
+      const item = masterlistRecords.find(record => activity.rowId && String(record.rowId) === String(activity.rowId))
+        || masterlistRecords.find(record => {
+          const identity = getDesignIdentity(record.record, record.sourceIndex, record.headers, record.rowId);
+          return normalize(identity.rowName) === normalize(activity.rowName)
+            && (!activity.rowBrand || normalize(identity.rowBrand) === normalize(activity.rowBrand))
+            && (!activity.sheetName || normalize(record.sheetName) === normalize(activity.sheetName));
+        });
+      if (item) {
+        openAdminRecordDetails(item.record, item.headers, item.rowId, item.sourceIndex, item.sheetName);
+        return;
+      }
+      document.getElementById('adminRowTitle').textContent = activity.rowName || 'CSI row visit';
+      document.getElementById('adminRowSubtitle').textContent = [activity.sheetName, activity.rowBrand].filter(Boolean).join(' · ') || 'CSI masterlist';
+      document.getElementById('adminRowFields').innerHTML = '<p class="py-3 text-[10px] text-gray-500">This row is no longer available in the current imported workbook.</p>';
+      document.getElementById('adminVisitCount').textContent = '1 visit';
+      document.getElementById('adminRowVisitors').innerHTML = `<div class="flex flex-wrap items-center justify-between gap-2 rounded border border-gray-200 bg-gray-50 px-3 py-2"><span class="text-[10px] font-bold">${escapeHtml(activity.employee || 'Employee')}</span><span class="text-[9px] text-gray-500">${escapeHtml(activity.recorded || 'Time not recorded')}</span></div>`;
+      document.getElementById('adminChangeCount').textContent = '0 edits';
+      document.getElementById('adminRowChanges').innerHTML = '<p class="rounded border border-dashed border-gray-300 px-3 py-3 text-[10px] text-gray-500">Row change details are unavailable.</p>';
       document.getElementById('adminRowDetails').showModal();
     }
 
@@ -905,46 +1182,7 @@
     renderImportBanner();
 
 
-    // Update the KPI totals to reflect the current dataset.
-    (function updateKpis() {
-
-        const grandTotalDesigns =
-            document.getElementById(
-                'grandTotalDesigns'
-            );
-
-
-        const brandTotalDesigns =
-            document.getElementById(
-                'brandTotalDesigns'
-            );
-
-
-        if (usingImportedData) {
-
-            grandTotalDesigns.textContent =
-                designs.length.toLocaleString();
-
-
-            const pumaCount =
-                designs.filter(
-                function (design) {
-                  return Object.entries(design).some(function ([key, value]) {
-                    return (
-                      key.trim().toLowerCase() === 'brand' &&
-                      String(value || '').toUpperCase().includes('PUMA')
-                    );
-                  });
-                }
-              ).length;
-
-
-            brandTotalDesigns.textContent =
-                pumaCount.toLocaleString();
-
-        }
-
-    })();
+    renderOverview();
 
 
     // Sidebar navigation
@@ -956,13 +1194,19 @@
         btn.classList.add('active','bg-[#fde5e7]','border','border-[#ffabb2]');
         const page = btn.dataset.page;
         const showMasterlist = page === 'CSI Masterlist';
-        document.getElementById('overviewView').classList.toggle('hidden', showMasterlist);
+        const showActivity = page === 'Activity';
+        const showAccounts = page === 'Accounts';
+        document.getElementById('overviewView').classList.toggle('hidden', showMasterlist || showActivity || showAccounts);
         document.getElementById('csiMasterlistView').classList.toggle('hidden', !showMasterlist);
+        document.getElementById('activityView').classList.toggle('hidden', !showActivity);
+        document.getElementById('accountsView').classList.toggle('hidden', !showAccounts);
         document.getElementById('pageTitle').textContent =
           page === 'Overview' ? 'Admin Dashboard' : page;
         document.getElementById('pageSubtitle').textContent =
           page === 'Overview' ? 'Monitor and Manage Apparel Records' : `Manage ${page.toLowerCase()}`;
         if (showMasterlist) renderMasterlist();
+        if (showActivity) renderActivity();
+        if (showAccounts) renderAccounts();
       });
     });
 
@@ -1052,23 +1296,11 @@
       }
     });
 
-    // Brand dropdown
-    const brandBtn = document.getElementById('brandSelect');
-    const brandMenu = document.getElementById('brandMenu');
-    brandBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      const r = brandBtn.getBoundingClientRect();
-      brandMenu.style.left = `${r.left}px`;
-      brandMenu.style.top = `${r.bottom + 5}px`;
-      brandMenu.classList.toggle('hidden');
+    document.getElementById('overviewView').addEventListener('click', event => {
+      const button = event.target.closest('[data-overview-page]');
+      if (!button) return;
+      document.querySelector(`.nav-btn[data-page="${button.dataset.overviewPage}"]`)?.click();
     });
-    document.querySelectorAll('.brand-option').forEach(option => {
-      option.addEventListener('click', () => {
-        brandBtn.innerHTML = `${option.textContent} <span class="text-[9px]">▼</span>`;
-        brandMenu.classList.add('hidden');
-      });
-    });
-    document.addEventListener('click', () => brandMenu.classList.add('hidden'));
 
     // Notifications
     document.getElementById('notificationBtn').addEventListener('click', () => {
@@ -1079,7 +1311,11 @@
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', () => {
       if (confirm('Are you sure you want to log out?')) {
-        alert('Logged out (frontend demo only).');
+        sessionStorage.removeItem('aoiLoggedIn');
+        sessionStorage.removeItem('aoiRole');
+        sessionStorage.removeItem('aoiEmail');
+        sessionStorage.removeItem('aoiName');
+        window.location.href = 'index.html';
       }
     });
 
